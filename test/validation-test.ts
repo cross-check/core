@@ -7,6 +7,7 @@ const { test } = QUnit;
 QUnit.module("Validator");
 
 test("a presence validator", async assert => {
+
   @validator('presence')
   class PresenceValidator extends SingleFieldValidator {
     validate(value: Opaque, error: SingleFieldError): void {
