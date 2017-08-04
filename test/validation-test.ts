@@ -1,15 +1,15 @@
-import { Validator, SingleFieldValidator, Opaque, SingleFieldError, validate, register, ValidatorClass } from '@validations/core';
+import { SingleFieldValidator, Opaque, SingleFieldError } from '@validations/core';
 import dsl, { validates } from '@validations/dsl';
-import { Task } from 'no-show';
+
+import { moduleForValidations, validator, validate } from './support';
 
 const { test } = QUnit;
 
-QUnit.module("Validator");
+moduleForValidations('Validators');
 
-test("a presence validator", async assert => {
-
+function validators() {
   @validator('presence')
-  class PresenceValidator extends SingleFieldValidator {
+  class PresenceValidator extends SingleFieldValidator<ReadonlyArray<never>> {
     validate(value: Opaque, error: SingleFieldError): void {
       if (value === null || value === undefined) {
         error.set('presence');
@@ -17,8 +17,29 @@ test("a presence validator", async assert => {
     }
   }
 
+  @validator('length')
+  class LengthValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
+    validate(_value: Opaque, error: SingleFieldError): void {
+      let length = this.getSubProperty('length');
+
+      if (typeof length === 'number') {
+        let [ { min = 0, max = Infinity } ] = this.args;
+
+        if (length < min || length > max) {
+          error.set('length');
+        }
+      }
+    }
+  }
+
+  return { PresenceValidator, LengthValidator };
+}
+
+test("a presence validator", async assert => {
+  validators();
+
   let descriptors = dsl({
-    name: validates('presence', PresenceValidator)
+    name: validates('presence')
   });
 
   let failure = [
@@ -32,8 +53,18 @@ test("a presence validator", async assert => {
   assert.deepEqual(await validate({ name: null }, descriptors), failure, `validate({ name: null })`);
 });
 
-function validator(name: string) {
-  return function(constructor: ValidatorClass) {
-    register(name, constructor);
-  }
-}
+test("a length validator", async assert => {
+  validators();
+
+  let descriptors = dsl({
+    emails: [
+      validates('presence'),
+      validates('length', { min: 1 })
+    ]
+  });
+
+  assert.deepEqual(await validate(null, descriptors), [{ path: ['emails'], message: 'presence' }]);
+  assert.deepEqual(await validate({ emails: null }, descriptors), [{ path: ['emails'], message: 'presence' }]);
+  assert.deepEqual(await validate({ emails: [] }, descriptors), [{ path: ['emails'], message: 'length' }]);
+  assert.deepEqual(await validate({ emails: ["wycats@example.com"] }, descriptors), []);
+});

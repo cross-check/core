@@ -1,6 +1,8 @@
+import { ValidationDescriptor } from '@validations/dsl';
+import { Runnable, Task } from 'no-show';
 import { Option, assert, Opaque } from '../utils';
 import { Message, Key, ValidationError, Validator } from '../validator';
-import { Runnable, Task } from 'no-show';
+import { Environment } from '../env';
 
 export class SingleFieldError {
   private error: Option<Message> = null;
@@ -22,17 +24,28 @@ export class SingleFieldError {
   }
 }
 
-export abstract class SingleFieldValidator extends Validator {
+export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> extends Validator<Args> {
   abstract validate(value: Opaque, error: SingleFieldError): Runnable<void>;
 
+  protected value: Opaque;
+
+  constructor(env: Environment, object: Opaque, descriptor: ValidationDescriptor) {
+    super(env, object, descriptor);
+    this.value = this.get(this.field);
+  }
+
+  protected getSubProperty(key: string): Opaque {
+    return this.env.get(this.value, key);
+  }
+
   run(): Task<ValidationError[]> {
-    let { descriptor: { field } } = this;
+    let { field } = this;
 
     return new Task(async run => {
       let error = new SingleFieldError(field);
 
       // TODO: Link correctly
-      await run(this.validate(this.get(field), error));
+      await run(this.validate(this.value, error));
 
       return error.build();
     });
