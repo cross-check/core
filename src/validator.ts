@@ -13,15 +13,29 @@ export interface ValidationError {
   message: Message;
 }
 
+export type NoArgs = ReadonlyArray<never>;
+
 export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArray<Opaque>> {
+  protected value: Opaque;
+
   constructor(
     protected env: Environment,
     private object: Opaque,
     protected descriptor: ValidationDescriptor
-  ) {}
+  ) {
+    this.value = this.get(this.field);
+    this.initialize();
+  }
+
+  // intentionally takes no parameters to aid subclassing
+  protected initialize(): void {}
 
   protected get field(): string {
     return this.descriptor.field;
+  }
+
+  protected get arg(): Args[0] {
+    return this.args[0];
   }
 
   protected get args(): Args {
