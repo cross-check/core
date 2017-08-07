@@ -1,14 +1,15 @@
 import { ValidationDescriptors, ValidationDescriptor } from '@validations/dsl';
 import { Task } from 'no-show';
 import { Validator, ValidationError } from './validator';
-import { Opaque, assert, Dict, dict } from './utils';
+import { Opaque, assert, Dict } from './utils';
+import { Environment } from './env';
 
-export function validate(object: Opaque, descriptors: ValidationDescriptors): Task<ValidationError[]> {
+export function validate(env: Environment, object: Opaque, descriptors: ValidationDescriptors): Task<ValidationError[]> {
   return new Task(async run => {
     let errors: ValidationError[] = [];
 
     for (let descriptor of flatten(descriptors)) {
-      let validator = buildValidator(object, descriptor);
+      let validator = buildValidator(env, object, descriptor);
       errors.push(...await run(validator.run()));
     }
 
@@ -16,11 +17,11 @@ export function validate(object: Opaque, descriptors: ValidationDescriptors): Ta
   })
 }
 
-export function validateSync(object: Opaque, descriptors: ValidationDescriptors): ValidationError[] {
+export function validateSync(env: Environment, object: Opaque, descriptors: ValidationDescriptors): ValidationError[] {
   let errors: ValidationError[] = [];
 
   for (let descriptor of flatten(descriptors)) {
-    let validator = buildValidator(object, descriptor);
+    let validator = buildValidator(env, object, descriptor);
     let errors = validator.run();
 
     if (Array.isArray(errors)) {
@@ -34,24 +35,14 @@ export function validateSync(object: Opaque, descriptors: ValidationDescriptors)
 }
 
 export interface ValidatorClass {
-  new(object: Opaque, descriptor: ValidationDescriptor): Validator;
+  new(env: Environment, object: Opaque, descriptor: ValidationDescriptor): Validator;
 }
 
-let registry = dict<ValidatorClass>();
-
-export function register(key: string, validator: ValidatorClass) {
-  registry[key] = validator;
-}
-
-export function reset() {
-  registry = dict();
-}
-
-function buildValidator(object: Opaque, descriptor: ValidationDescriptor): Validator {
+function buildValidator(env: Environment, object: Opaque, descriptor: ValidationDescriptor): Validator {
   let name = descriptor.validator.name;
-  let constructor = registry[name];
+  let constructor = env.getValidator(name);
 
-  return new constructor(object, descriptor);
+  return new constructor(env, object, descriptor);
 }
 
 function flatten(descriptors: ValidationDescriptors): ValidationDescriptor[] {
