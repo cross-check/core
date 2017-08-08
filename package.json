@@ -7,20 +7,22 @@
   ],
   "repository": "https://github.com/tildeio/validations-core",
   "main": "dist/commonjs/src/index.js",
-  "module": "dist/modules/src/index.js",
+  "module": "dist/es2015/src/index.js",
   "types": "dist/types/src/index.d.ts",
   "scripts": {
     "preversion": "npm run test",
     "prepare": "npm run build",
     "pretest": "npm run build",
-    "build": "./scripts/build",
+    "build": "node ./scripts/build.js",
     "test": "qunit dist/commonjs/test/**-test.js"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/qunit": "^2.0.31",
     "qunitjs": "^2.4.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.4.2",
+    "rimraf": "^2.6.1",
+    "shelljs": "^0.7.8"
   },
   "dependencies": {
     "no-show": "^0.5.2",
