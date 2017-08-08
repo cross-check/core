@@ -1,8 +1,6 @@
-import { ValidationDescriptor } from '@validations/dsl';
 import { Runnable, Task } from 'no-show';
 import { Option, assert, Opaque } from '../utils';
 import { Message, Key, ValidationError, Validator } from '../validator';
-import { Environment } from '../env';
 
 export class SingleFieldError {
   private error: Option<Message> = null;
@@ -26,13 +24,6 @@ export class SingleFieldError {
 
 export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> extends Validator<Args> {
   abstract validate(value: Opaque, error: SingleFieldError): Runnable<void>;
-
-  protected value: Opaque;
-
-  constructor(env: Environment, object: Opaque, descriptor: ValidationDescriptor) {
-    super(env, object, descriptor);
-    this.value = this.get(this.field);
-  }
 
   protected getSubProperty(key: string): Opaque {
     return this.env.get(this.value, key);
