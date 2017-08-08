@@ -13,12 +13,14 @@ export class ValidatorTest extends ValidationTest {
         obj({
           lat: [
             validates('presence'),
-            validates('numeric', { min: -90, max: 90 })
+            validates('numeric'),
+            validates('range', { min: -90, max: 90 })
           ],
 
           long: [
             validates('presence'),
-            validates('numeric', { min: -180, max: 180 })
+            validates('numeric'),
+            validates('range', { min: -180, max: 180 })
           ]
         })
       ]
@@ -27,6 +29,7 @@ export class ValidatorTest extends ValidationTest {
     assert.deepEqual(await this.validate(null, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate(null)');
     assert.deepEqual(await this.validate({ geo: null }, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate({ geo: null })');
     assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, descriptors), [{ path: ['geo', 'lat'], message: 'presence' }, { path: ['geo', 'long'], message: 'presence' }], 'validate({ geo: { lat: null, long: null } })');
-    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'presence' }], 'validate({ geo: { lat: 0, long: 300 } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, descriptors), [{ path: ['geo', 'long'], message: 'numeric' }], 'validate({ geo: { lat: 0, long: {} } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'range' }], 'validate({ geo: { lat: 0, long: 300 } })');
   }
 }

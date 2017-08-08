@@ -21,7 +21,7 @@ export class FieldsValidator extends Validator<[ValidationDescriptors]> {
   protected normalized: ValidationDescriptors;
 
   run(): Task<ValidationError[]> {
-    let { value } = this;
+    let { value, field } = this;
 
     return new Task(async run => {
       let errors: ValidationError[] = [];
@@ -30,7 +30,11 @@ export class FieldsValidator extends Validator<[ValidationDescriptors]> {
         let { arg, env } = this;
 
         for (let key of Object.keys(arg)) {
-          await run(validateFlattened(env, value, arg[key]));
+          let suberrors = await run(validateFlattened(env, value, arg[key]));
+
+          for (let error of suberrors) {
+            errors.push({ message: error.message, path: [field, ...error.path] });
+          }
         }
       }
 
