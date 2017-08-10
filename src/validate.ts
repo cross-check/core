@@ -5,10 +5,11 @@ import { Opaque, Dict } from './utils';
 import { Environment } from './env';
 
 export function validate(env: Environment, object: Opaque, descriptors: ValidationDescriptors): Task<ValidationError[]> {
-  return validateFlattened(env, object, flatten(descriptors));
+  if (object === 'wycats@example.com') debugger;
+  return validateFlattened(env, object, flattenDict(descriptors));
 }
 
-export function validateFlattened(env: Environment, object: Opaque, descriptors: ValidationDescriptor[]): Task<ValidationError[]> {
+export function validateFlattened(env: Environment, object: Opaque, descriptors: Iterable<ValidationDescriptor>): Task<ValidationError[]> {
   return new Task(async run => {
     let errors: ValidationError[] = [];
 
@@ -33,10 +34,10 @@ function buildValidator(env: Environment, object: Opaque, descriptor: Validation
   return new constructor(env, object, descriptor);
 }
 
-function flatten(descriptors: ValidationDescriptors): ValidationDescriptor[] {
+export function flattenDict(descriptors: ValidationDescriptors): ValidationDescriptor[] {
   let flattened: ValidationDescriptor[] = [];
 
-  for (let descs of values(descriptors)) {
+  for (let descs of values<ValidationDescriptor[]>(descriptors)) {
     flattened.push(...descs);
   }
 

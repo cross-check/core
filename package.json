@@ -24,7 +24,7 @@
     "shelljs": "^0.7.8"
   },
   "dependencies": {
-    "no-show": "^0.5.2",
-    "@validations/dsl": "^0.5.4"
+    "@validations/dsl": "^0.5.7",
+    "no-show": "^0.5.2"
   }
 }
