@@ -1,4 +1,3 @@
-const rimraf = require('rimraf');
 const shell = require('shelljs');
 
 shell.rm('-rf', 'dist');
