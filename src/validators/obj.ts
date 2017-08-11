@@ -49,3 +49,23 @@ export function obj(dsl: FieldsDSL): Nested<ValidationBuilderDSL> {
     validates('fields', normalizeDSL(dsl))
   ]
 }
+
+export function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
+  return [
+    validates('presence'),
+    input
+  ];
+}
+
+export function length(options: { min: number, max?: number }): Nested<ValidationBuilderDSL> {
+  return obj({
+    length: notnull([validates('numeric'), validates('range', options)])
+  });
+}
+
+export function range(options: { min?: number, max?: number }): Nested<ValidationBuilderDSL> {
+  return notnull([
+    validates('numeric'),
+    validates('range', options)
+  ])
+}

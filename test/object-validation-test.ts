@@ -1,8 +1,5 @@
-import { ValidationBuilderDSL } from '@validations/dsl/dist/types/src/dsl';
 import dsl, { validates } from '@validations/dsl';
-import { obj } from '@validations/core';
-import { Nested } from "@validations/dsl/src/utils";
-
+import { obj, notnull, length, range } from '@validations/core';
 import { ValidationTest, QUnitAssert, module, test } from './support';
 
 @module("Object Validators")
@@ -38,19 +35,7 @@ export class ValidatorTest extends ValidationTest {
   @test
   async "an obj range validator"(assert: QUnitAssert) {
 
-    function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
-      return [
-        validates('presence'),
-        input
-      ];
-    }
 
-    function range(options: { min?: number, max?: number }): Nested<ValidationBuilderDSL> {
-      return notnull([
-        validates('numeric'),
-        validates('range', options)
-      ])
-    }
 
     let descriptors = dsl({
       geo: [
@@ -70,19 +55,6 @@ export class ValidatorTest extends ValidationTest {
 
   @test
   async "an obj length validator"(assert: QUnitAssert) {
-
-    function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
-      return [
-        validates('presence'),
-        input
-      ];
-    }
-
-    function length(options: { min: number, max?: number }): Nested<ValidationBuilderDSL> {
-      return obj({
-          length: notnull([validates('numeric'), validates('range', options)])
-        });
-    }
 
     let descriptors = dsl({
       emails: [
