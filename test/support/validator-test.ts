@@ -9,6 +9,7 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
+  ArrayValidator,
   FieldsValidator
 } from '@validations/core';
 import { Task } from 'no-show';
@@ -23,6 +24,8 @@ export abstract class ValidationTest extends TestCase {
 
     this.env.register('object', ObjectValidator);
     this.env.register('fields', FieldsValidator);
+
+    this.env.register('array', ArrayValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
