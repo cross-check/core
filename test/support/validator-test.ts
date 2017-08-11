@@ -9,6 +9,7 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
+  ArrayValidator,
   FieldsValidator
 } from '@validations/core';
 import { Task } from 'no-show';
@@ -23,6 +24,8 @@ export abstract class ValidationTest extends TestCase {
 
     this.env.register('object', ObjectValidator);
     this.env.register('fields', FieldsValidator);
+
+    this.env.register('array', ArrayValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -103,20 +106,5 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  @validator('length')
-  class LengthValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
-    validate(_value: Opaque, error: SingleFieldError): void {
-      let length = this.getSubProperty('length');
-
-      if (typeof length === 'number') {
-        let [ { min = 0, max = Infinity } ] = this.args;
-
-        if (length < min || length > max) {
-          error.set('length');
-        }
-      }
-    }
-  }
-
-  return { PresenceValidator, NumericValidator, RangeValidator, LengthValidator };
+  return { PresenceValidator, NumericValidator, RangeValidator };
 }
