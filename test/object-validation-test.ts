@@ -36,7 +36,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "a more ergonomic example"(assert: QUnitAssert) {
+  async "an obj range validator"(assert: QUnitAssert) {
 
     function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
       return [
@@ -66,5 +66,39 @@ export class ValidatorTest extends ValidationTest {
     assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, descriptors), [{ path: ['geo', 'lat'], message: 'presence' }, { path: ['geo', 'long'], message: 'presence' }], 'validate({ geo: { lat: null, long: null } })');
     assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, descriptors), [{ path: ['geo', 'long'], message: 'numeric' }], 'validate({ geo: { lat: 0, long: {} } })');
     assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'range' }], 'validate({ geo: { lat: 0, long: 300 } })');
+  }
+
+  @test
+  async "an obj length validator"(assert: QUnitAssert) {
+
+    function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
+      return [
+        validates('presence'),
+        input
+      ];
+    }
+
+    function length(options: { min: number, max?: number }): Nested<ValidationBuilderDSL> {
+      return notnull([
+        validates('array'),
+        validates('length', options)
+      ])
+    }
+
+    let descriptors = dsl({
+      info: [
+        notnull(obj({
+          emails: length({ min: 1, max: 3 })
+        }))
+      ]
+    });
+
+    assert.deepEqual(await this.validate(null, descriptors), [{ path: ['info'], message: 'presence' }], 'validate(null)');
+    assert.deepEqual(await this.validate({ info: null }, descriptors), [{ path: ['info'], message: 'presence' }], 'validate({ info: null })');
+    assert.deepEqual(await this.validate({ info: { emails: null } }, descriptors), [{ path: ['info', 'emails'], message: 'presence' }], 'validate({ info: { emails: null } })');
+    assert.deepEqual(await this.validate({ info: { emails: {} } }, descriptors), [{ path: ['info', 'emails'], message: 'array' }], 'validate({ info: { emails: {} } })');
+    assert.deepEqual(await this.validate({ info: { emails: [] } }, descriptors), [{ path: ['info', 'emails'], message: 'length' }], 'validate({ info: { emails: [] } })');
+    assert.deepEqual(await this.validate({ info: { emails: ['jimmy@gmail.com'] } }, descriptors), [], 'validate({ info: { emails: [\'jimmy@gmail.com\'] } })');
+    assert.deepEqual(await this.validate({ info: { emails: ['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'] } }, descriptors), [{ path: ['info', 'emails'], message: 'length' }], 'validate({ info: { emails: [\'jimmy@gmail.com\', \'sally@gmail.com\', \'buddy@gmail.com\', \'harry@gmail.com\'] } })');
   }
 }
