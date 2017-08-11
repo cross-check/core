@@ -83,18 +83,6 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  @validator('array')
-  class ArrayValidator extends SingleFieldValidator<NoArgs> {
-    validate(value: Opaque, error: SingleFieldError): void {
-      // null and undefined should be handled by the presence validator
-      if (value === null || value === undefined) return;
-
-      if (!Array.isArray(value)) {
-        error.set('array');
-      }
-    }
-  }
-
   @validator('range')
   class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
     validate(value: Opaque, error: SingleFieldError): void {
@@ -115,20 +103,5 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  @validator('length')
-  class LengthValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
-    validate(_value: Opaque, error: SingleFieldError): void {
-      let length = this.getSubProperty('length');
-
-      if (typeof length === 'number') {
-        let [ { min = 0, max = Infinity } ] = this.args;
-
-        if (length < min || length > max) {
-          error.set('length');
-        }
-      }
-    }
-  }
-
-  return { PresenceValidator, NumericValidator, ArrayValidator, RangeValidator, LengthValidator };
+  return { PresenceValidator, NumericValidator, RangeValidator };
 }
