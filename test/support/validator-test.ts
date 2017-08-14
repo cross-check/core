@@ -9,11 +9,12 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
-  FieldsValidator
+  FieldsValidator, Nested
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
 import { TestCase } from './test-case';
+import { isRegularExpressionLiteral } from "typescript";
 
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
@@ -83,6 +84,18 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
+  @validator('string')
+  class StringValidator extends SingleFieldValidator<NoArgs> {
+    validate(value: Opaque, error: SingleFieldError): void {
+      // null and undefined should be handled by the presence validator
+      if (value === null || value === undefined) return;
+
+      if (typeof value !== 'string') {
+        error.set('string');
+      }
+    }
+  }
+
   @validator('range')
   class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
     validate(value: Opaque, error: SingleFieldError): void {
@@ -103,5 +116,23 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  return { PresenceValidator, NumericValidator, RangeValidator };
+  @validator('format')
+  class FormatValidator extends SingleFieldValidator<RegExp[]> {
+    validate(value: Opaque, error: SingleFieldError): void {
+      // non-string values are not relevant to this test
+      if (typeof value !== 'string') return;
+
+      let options = this.args;
+      options.forEach(regexp => {
+        
+      });
+
+      if (options) {
+        error.set('format');
+
+      }
+    }
+  }
+
+  return { PresenceValidator, NumericValidator, RangeValidator, StringValidator, FormatValidator };
 }
