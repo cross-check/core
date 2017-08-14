@@ -68,6 +68,10 @@ export class ValidatorTest extends ValidationTest {
     assert.deepEqual(await this.validate({ emails: { length: 2 } }, descriptors), [], 'validate({ emails: { length: 2 } })');
     assert.deepEqual(await this.validate({ emails: [] }, descriptors), [{ path: ['emails', 'length'], message: 'range' }], 'validate({ emails: [] } })');
     assert.deepEqual(await this.validate({ emails: ['jimmy@gmail.com'] }, descriptors), [], 'validate({ emails: [\'jimmy@gmail.com\'] })');
-    assert.deepEqual(await this.validate({ emails: ['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'] }, descriptors), [{ path: ['emails', 'length'], message: 'range' }], 'validate({ emails: [\'jimmy@gmail.com\', \'sally@gmail.com\', \'buddy@gmail.com\', \'harry@gmail.com\'] } })');
+
+    let failureMessage = 'validate({ emails: [\'jimmy@gmail.com\', \'sally@gmail.com\', \'buddy@gmail.com\', \'harry@gmail.com\'] } })';
+    let testDSL = { emails: ['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'] };
+    let expected = [{ path: ['emails', 'length'], message: 'range' }];
+    assert.deepEqual(await this.validate(testDSL, descriptors), expected, failureMessage);
   }
 }
