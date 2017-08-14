@@ -1,5 +1,5 @@
-import dsl, { validates } from '@validations/dsl';
-import { obj, notnull, length, range, url } from '@validations/core';
+import dsl from '@validations/dsl';
+import { url } from '@validations/core';
 import { ValidationTest, QUnitAssert, module, test } from './support';
 
 @module("URL validators")
@@ -11,7 +11,6 @@ export class ValidatorTest extends ValidationTest {
         url()
       ]
     });
-
 
     assert.deepEqual(await this.validate(null, descriptors), [], 'validate(null)');
     assert.deepEqual(await this.validate({ slug: null }, descriptors), [], 'validate({ slug: null })');
