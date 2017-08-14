@@ -34,9 +34,6 @@ export class ValidatorTest extends ValidationTest {
 
   @test
   async "an obj range validator"(assert: QUnitAssert) {
-
-
-
     let descriptors = dsl({
       geo: [
         notnull(obj({
