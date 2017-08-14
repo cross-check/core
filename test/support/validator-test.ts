@@ -116,20 +116,13 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  @validator('format')
-  class FormatValidator extends SingleFieldValidator<RegExp[]> {
+@validator('format')
+  class FormatValidator extends SingleFieldValidator<[RegExp]> {
     validate(value: Opaque, error: SingleFieldError): void {
-      // non-string values are not relevant to this test
-      if (typeof value !== 'string') return;
-
-      let options = this.args;
-      options.forEach(regexp => {
-        
-      });
-
-      if (options) {
-        error.set('format');
-
+      if (typeof value === 'string') {
+        if (!this.arg.test(value)) {
+          error.set('email');
+        }
       }
     }
   }
