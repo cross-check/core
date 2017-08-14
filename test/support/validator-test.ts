@@ -9,12 +9,11 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
-  FieldsValidator, Nested
+  FieldsValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
 import { TestCase } from './test-case';
-import { isRegularExpressionLiteral } from "typescript";
 
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
@@ -121,7 +120,7 @@ function basicValidators(validator: ValidatorDecorator): any {
     validate(value: Opaque, error: SingleFieldError): void {
       if (typeof value === 'string') {
         if (!this.arg.test(value)) {
-          error.set('email');
+          error.set('format');
         }
       }
     }
