@@ -9,7 +9,9 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
-  FieldsValidator, DateValidator
+  FieldsValidator,
+  DateValidator,
+  PresenceValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -24,6 +26,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('object', ObjectValidator);
     this.env.register('fields', FieldsValidator);
     this.env.register('date', DateValidator);
+    this.env.register('presence', PresenceValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -63,15 +66,6 @@ export interface ValidatorDecorator {
 //
 // see https://github.com/Microsoft/TypeScript/issues/9448#issuecomment-320779210
 function basicValidators(validator: ValidatorDecorator): any {
-  @validator('presence')
-  class PresenceValidator extends SingleFieldValidator<NoArgs> {
-    validate(value: Opaque, error: SingleFieldError): void {
-      if (value === null || value === undefined) {
-        error.set('presence');
-      }
-    }
-  }
-
   @validator('numeric')
   class NumericValidator extends SingleFieldValidator<NoArgs> {
     validate(value: Opaque, error: SingleFieldError): void {

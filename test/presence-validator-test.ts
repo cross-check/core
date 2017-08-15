@@ -1,0 +1,18 @@
+import dsl, { validates } from '@validations/dsl';
+import { ValidationTest, QUnitAssert, module, test } from './support';
+
+@module("name validators")
+export class ValidatorTest extends ValidationTest {
+  @test
+  async "name validator"(assert: QUnitAssert) {
+    let descriptors = dsl({
+      name: validates('presence')
+    });
+
+    assert.deepEqual(await this.validate(null, descriptors), [{ path: ['name'], message: 'presence' }], 'validate(null)');
+    assert.deepEqual(await this.validate({ name: null }, descriptors), [{ path: ['name'], message: 'presence' }], 'validate({ name: null })');
+    assert.deepEqual(await this.validate({ name: undefined }, descriptors), [{ path: ['name'], message: 'presence' }], 'validate({ name: undefined })');
+    assert.deepEqual(await this.validate({ name: 'words' }, descriptors), [], 'validate({ name: \'words\' })');
+    assert.deepEqual(await this.validate({ name: 123 }, descriptors), [], 'validate({ name: 123 })');
+  }
+}

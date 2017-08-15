@@ -7,7 +7,7 @@ const httpUrlFormat = /^http:\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 const httpsUrlFormat = /^https:\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 const protocolRelativeUrlFormat = /^\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 
-export function url(option: string | undefined): Nested<ValidationBuilderDSL> {
+export function url(option: string | undefined = undefined): Nested<ValidationBuilderDSL> {
   let validators: ValidationBuilderDSL[] = [
     validates('string')
   ];
