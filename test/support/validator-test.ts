@@ -9,7 +9,7 @@ import {
   SingleFieldError,
   NoArgs,
   ObjectValidator,
-  FieldsValidator
+  FieldsValidator, DateValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -23,6 +23,7 @@ export abstract class ValidationTest extends TestCase {
 
     this.env.register('object', ObjectValidator);
     this.env.register('fields', FieldsValidator);
+    this.env.register('date', DateValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
