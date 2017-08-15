@@ -7,3 +7,4 @@ export * from './validators/year';
 export * from './validators/geo';
 export * from './validators/date';
 export * from './validators/presence';
+export * from './validators/numeric';
