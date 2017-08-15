@@ -5,15 +5,14 @@ import {
   ValidationError,
   dict,
   validate as validateWithEnv,
-  SingleFieldValidator,
-  SingleFieldError,
   ObjectValidator,
   FieldsValidator,
   DateValidator,
   PresenceValidator,
   NumericValidator,
   StringValidator,
-  RangeValidator
+  RangeValidator,
+  FormatValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -22,9 +21,7 @@ import { TestCase } from './test-case';
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
 
-  protected define(validator: ValidatorDecorator): void {
-    basicValidators(validator);
-
+  protected define(): void {
     this.env.register('object', ObjectValidator);
     this.env.register('fields', FieldsValidator);
     this.env.register('date', DateValidator);
@@ -32,6 +29,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('numeric', NumericValidator);
     this.env.register('string', StringValidator);
     this.env.register('range', RangeValidator);
+    this.env.register('format', FormatValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -39,7 +37,7 @@ export abstract class ValidationTest extends TestCase {
   }
 
   before() {
-    this.define((name) => (constructor) => this.env.register(name, constructor));
+    this.define();
   }
 }
 
@@ -64,24 +62,4 @@ export class Environment extends AbstractEnvironment {
 
 export interface ValidatorDecorator {
   (name: string): (constructor: ValidatorClass) => void;
-}
-
-// The `any` here and the return in the body of the function is working around a typescript
-// limitation that prevents us from decorating a class expression.
-//
-// see https://github.com/Microsoft/TypeScript/issues/9448#issuecomment-320779210
-function basicValidators(validator: ValidatorDecorator): any {
-
-@validator('format')
-  class FormatValidator extends SingleFieldValidator<[RegExp]> {
-    validate(value: Opaque, error: SingleFieldError): void {
-      if (typeof value === 'string') {
-        if (!this.arg.test(value)) {
-          error.set('format');
-        }
-      }
-    }
-  }
-
-  return { FormatValidator };
 }

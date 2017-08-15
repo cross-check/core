@@ -10,3 +10,4 @@ export * from './validators/presence';
 export * from './validators/numeric';
 export * from './validators/string';
 export * from './validators/range';
+export * from './validators/format';

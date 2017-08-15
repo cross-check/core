@@ -6,9 +6,6 @@ import { ValidationTest, QUnitAssert, module, test } from './support';
 @module("Single Field Validators")
 export class ValidatorTest extends ValidationTest {
   @test
-
-
-  @test
   async "a length validator"(assert: QUnitAssert) {
     let descriptors = dsl({
       emails: [
