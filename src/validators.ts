@@ -8,3 +8,4 @@ export * from './validators/geo';
 export * from './validators/date';
 export * from './validators/presence';
 export * from './validators/numeric';
+export * from './validators/string';

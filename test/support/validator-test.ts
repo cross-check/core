@@ -7,12 +7,12 @@ import {
   validate as validateWithEnv,
   SingleFieldValidator,
   SingleFieldError,
-  NoArgs,
   ObjectValidator,
   FieldsValidator,
   DateValidator,
   PresenceValidator,
-  NumericValidator
+  NumericValidator,
+  StringValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -29,6 +29,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('date', DateValidator);
     this.env.register('presence', PresenceValidator);
     this.env.register('numeric', NumericValidator);
+    this.env.register('string', StringValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -68,18 +69,6 @@ export interface ValidatorDecorator {
 //
 // see https://github.com/Microsoft/TypeScript/issues/9448#issuecomment-320779210
 function basicValidators(validator: ValidatorDecorator): any {
-  @validator('string')
-  class StringValidator extends SingleFieldValidator<NoArgs> {
-    validate(value: Opaque, error: SingleFieldError): void {
-      // null and undefined should be handled by the presence validator
-      if (value === null || value === undefined) return;
-
-      if (typeof value !== 'string') {
-        error.set('string');
-      }
-    }
-  }
-
   @validator('range')
   class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
     validate(value: Opaque, error: SingleFieldError): void {
@@ -111,5 +100,5 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  return { PresenceValidator, NumericValidator, RangeValidator, StringValidator, FormatValidator };
+  return { RangeValidator, FormatValidator };
 }
