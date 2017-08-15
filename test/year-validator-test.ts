@@ -2,10 +2,10 @@ import dsl from '@validations/dsl';
 import { year } from '@validations/core';
 import { ValidationTest, QUnitAssert, module, test } from './support';
 
-@module("email validators")
+@module("year validators")
 export class ValidatorTest extends ValidationTest {
   @test
-  async "email validator"(assert: QUnitAssert) {
+  async "year validator"(assert: QUnitAssert) {
     let descriptors = dsl({
       releaseYear: [
         year()
