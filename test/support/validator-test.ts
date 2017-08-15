@@ -12,7 +12,8 @@ import {
   DateValidator,
   PresenceValidator,
   NumericValidator,
-  StringValidator
+  StringValidator,
+  RangeValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -30,6 +31,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('presence', PresenceValidator);
     this.env.register('numeric', NumericValidator);
     this.env.register('string', StringValidator);
+    this.env.register('range', RangeValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -69,25 +71,6 @@ export interface ValidatorDecorator {
 //
 // see https://github.com/Microsoft/TypeScript/issues/9448#issuecomment-320779210
 function basicValidators(validator: ValidatorDecorator): any {
-  @validator('range')
-  class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
-    validate(value: Opaque, error: SingleFieldError): void {
-      // non-numeric values should be handled by the numeric validator
-      if (typeof value !== 'number') return;
-
-      let options = this.arg;
-
-      if (options.min && value < options.min) {
-        error.set('range');
-        return;
-      }
-
-      if (options.max && value > options.max) {
-        error.set('range');
-        return;
-      }
-    }
-  }
 
 @validator('format')
   class FormatValidator extends SingleFieldValidator<[RegExp]> {
@@ -100,5 +83,5 @@ function basicValidators(validator: ValidatorDecorator): any {
     }
   }
 
-  return { RangeValidator, FormatValidator };
+  return { FormatValidator };
 }
