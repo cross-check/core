@@ -12,7 +12,7 @@ import {
   NumericValidator,
   StringValidator,
   RangeValidator,
-  FormatValidator
+  FormatValidator, Maybe
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -32,8 +32,8 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('format', FormatValidator);
   }
 
-  protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
-    return validateWithEnv(this.env, object, descs);
+  protected validate(object: Opaque, descs: ValidationDescriptors, context: Maybe<string> = undefined): Task<ValidationError[]> {
+    return validateWithEnv(this.env, object, descs, context);
   }
 
   before() {
