@@ -34,3 +34,5 @@ export function *flatten<T>(nested: Nested<T>): Iterable<T> {
     yield nested;
   }
 }
+
+export type Maybe<T>= T | undefined;
