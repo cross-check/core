@@ -14,7 +14,8 @@ import {
   ObjectValidator,
   PresenceValidator,
   RangeValidator,
-  StringValidator
+  StringValidator,
+  expect
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -60,7 +61,7 @@ export class Environment extends AbstractEnvironment {
   }
 
   getValidator(name: string): ValidatorClass {
-    return this.validators[name];
+    return expect(this.validators[name], `unexpected missing validator '${name}'`);
   }
 }
 

@@ -46,6 +46,6 @@ export function flattenDict(descriptors: ValidationDescriptors): ValidationDescr
 
 function *values<T>(object: Dict<T>): Iterable<T> {
   for (let prop in object) {
-    yield object[prop];
+    yield object[prop]!;
   }
 }

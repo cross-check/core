@@ -30,7 +30,7 @@ export class FieldsValidator extends Validator<[ValidationDescriptors]> {
         let { arg, env } = this;
 
         for (let key of Object.keys(arg)) {
-          let suberrors = await run(validateFlattened(env, value, arg[key]));
+          let suberrors = await run(validateFlattened(env, value, arg[key]!));
 
           for (let error of suberrors) {
             errors.push({ message: error.message, path: [field, ...error.path] });
