@@ -5,14 +5,17 @@ import {
   ValidationError,
   dict,
   validate as validateWithEnv,
-  ObjectValidator,
-  FieldsValidator,
+  ArrayValidator,
   DateValidator,
-  PresenceValidator,
+  FieldsValidator,
+  FormatValidator,
+  MembersValidator,
   NumericValidator,
-  StringValidator,
+  ObjectValidator,
+  PresenceValidator,
   RangeValidator,
-  FormatValidator
+  StringValidator,
+  expect
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -22,14 +25,16 @@ export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
 
   protected define(): void {
-    this.env.register('object', ObjectValidator);
-    this.env.register('fields', FieldsValidator);
+    this.env.register('array', ArrayValidator);
     this.env.register('date', DateValidator);
-    this.env.register('presence', PresenceValidator);
-    this.env.register('numeric', NumericValidator);
-    this.env.register('string', StringValidator);
-    this.env.register('range', RangeValidator);
+    this.env.register('fields', FieldsValidator);
     this.env.register('format', FormatValidator);
+    this.env.register('members', MembersValidator);
+    this.env.register('numeric', NumericValidator);
+    this.env.register('object', ObjectValidator);
+    this.env.register('presence', PresenceValidator);
+    this.env.register('range', RangeValidator);
+    this.env.register('string', StringValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
@@ -56,7 +61,7 @@ export class Environment extends AbstractEnvironment {
   }
 
   getValidator(name: string): ValidatorClass {
-    return this.validators[name];
+    return expect(this.validators[name], `unexpected missing validator '${name}'`);
   }
 }
 

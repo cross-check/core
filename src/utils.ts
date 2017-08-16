@@ -1,10 +1,11 @@
 export type Option<T> = T | null;
+export type Maybe<T> = T | undefined;
 
 export type Present = {} | void;
 export type Opaque = Present | null | undefined;
 
 export interface Dict<T = Opaque> {
-  [key: string]: T;
+  [key: string]: Maybe<T>;
 }
 
 export function dict<T = Opaque>(): Dict<T> {
@@ -20,6 +21,14 @@ class AssertionFailed extends Error {
 /* TODO: use babel-plugin-debug-macros */
 export function assert(cond: any, message?: string) {
   if (!cond) throw new AssertionFailed(message);
+}
+
+export function expect<T>(value: Maybe<Option<T>>, message: string): T {
+  if (value === null || value === undefined) {
+    throw new Error(message);
+  }
+
+  return value;
 }
 
 export type Nested<T> = T | NestedArray<T>;
