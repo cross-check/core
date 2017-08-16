@@ -33,7 +33,7 @@ function buildValidator(env: Environment, object: Opaque, descriptor: Validation
   return new constructor(env, object, descriptor);
 }
 
-export function flatten(descriptors: ValidationDescriptors): ValidationDescriptor[] {
+function flatten(descriptors: ValidationDescriptors): ValidationDescriptor[] {
   let flattened: ValidationDescriptor[] = [];
 
   for (let descs of values(descriptors)) {

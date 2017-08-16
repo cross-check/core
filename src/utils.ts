@@ -21,3 +21,16 @@ class AssertionFailed extends Error {
 export function assert(cond: any, message?: string) {
   if (!cond) throw new AssertionFailed(message);
 }
+
+export type Nested<T> = T | NestedArray<T>;
+export interface NestedArray<T> extends Array<Nested<T>> {};
+
+export function *flatten<T>(nested: Nested<T>): Iterable<T> {
+  if (Array.isArray(nested)) {
+    for (let item of nested) {
+      yield *flatten(item);
+    }
+  } else {
+    yield nested;
+  }
+}
