@@ -58,9 +58,6 @@ export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArr
   }
 
   runWithContext(providedContext: Maybe<string>): Runnable<ValidationError[]> {
-    if(providedContext) {
-      console.log(this.descriptor, providedContext);
-    }
     if (!validationShouldRun(this.descriptor, providedContext)) {
       return [];
     }
