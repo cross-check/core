@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "@validations/dsl": "^0.6.0",
-    "no-show": "^0.5.2"
+    "no-show": "^0.6.0"
   }
 }
