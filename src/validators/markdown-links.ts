@@ -8,7 +8,7 @@ let validMdLink: RegExp = /\[([^\[]+)\]\(([^\)]+)\)/g;
 let appleUrl: RegExp = /(\()http(s)?:\/\/\.?[a-z0-9]+([\-\.]{1}[a-z0-9-]+)*\.[a-z]{2,63}(:[0-9]{1,5})?(\/.*)?\)$/gm;
 let specialMdCases = /(#video|#iframe|mailto)/g;
 
-export class MarkdownLinks extends SingleFieldValidator<NoArgs> {
+export class MarkdownLinksValidator extends SingleFieldValidator<NoArgs> {
   validate(value: Opaque, error: SingleFieldError): void {
     if (value === null || value === undefined || typeof value !== "string") return;
 

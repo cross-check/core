@@ -16,7 +16,7 @@ import {
   RangeValidator,
   StringValidator,
   expect,
-  MarkdownLinks
+  MarkdownLinksValidator, CanonicalUrlValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -36,7 +36,8 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('presence', PresenceValidator);
     this.env.register('range', RangeValidator);
     this.env.register('string', StringValidator);
-    this.env.register('markdown-links', MarkdownLinks);
+    this.env.register('markdown-links', MarkdownLinksValidator);
+    this.env.register('canonical-url', CanonicalUrlValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
