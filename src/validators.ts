@@ -12,3 +12,4 @@ export * from './validators/string';
 export * from './validators/range';
 export * from './validators/format';
 export * from './validators/markdown-links';
+export * from './validators/number-or-percentage';

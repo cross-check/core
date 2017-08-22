@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
 import { ValidationTest, QUnitAssert, module, test } from './support';
 
-@module("numeric validators")
+@module("markdown validators")
 export class ValidatorTest extends ValidationTest {
   @test
-  async "numeric validator"(assert: QUnitAssert) {
+  async "markdown links validator"(assert: QUnitAssert) {
     let descriptors = dsl({
       body: validates('markdown-links')
     });
