@@ -16,11 +16,14 @@ import {
   RangeValidator,
   StringValidator,
   expect,
-  MarkdownLinksValidator, CanonicalUrlValidator
+  MarkdownLinksValidator,
+  CanonicalUrlValidator,
+  InlineAllPresent
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
 import { TestCase } from './test-case';
+import {} from "../../src/validators/inline-all-present";
 
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
@@ -38,6 +41,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('string', StringValidator);
     this.env.register('markdown-links', MarkdownLinksValidator);
     this.env.register('canonical-url', CanonicalUrlValidator);
+    this.env.register('inline-all-present', InlineAllPresent);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {

@@ -14,3 +14,4 @@ export * from './validators/format';
 export * from './validators/markdown-links';
 export * from './validators/number-or-percentage';
 export * from './validators/canonical-url';
+export * from './validators/inline-all-present';
