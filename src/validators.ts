@@ -17,3 +17,4 @@ export * from './validators/canonical-url';
 export * from './validators/inline-all-present';
 export * from './validators/categories-minimum';
 export * from './validators/syndication-contributors-author';
+export * from './validators/syndication-photos-tout';

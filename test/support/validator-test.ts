@@ -20,7 +20,8 @@ import {
   CanonicalUrlValidator,
   InlineAllPresentValidator,
   CategoriesMinimumValidator,
-  SyndicationContributorsAuthorValidator
+  SyndicationContributorsAuthorValidator,
+  SyndicationPhotosToutValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -46,6 +47,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('inline-all-present', InlineAllPresentValidator);
     this.env.register('categories-minimum', CategoriesMinimumValidator);
     this.env.register('syndication-contributors-author', SyndicationContributorsAuthorValidator);
+    this.env.register('syndication-photos-tout', SyndicationPhotosToutValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
