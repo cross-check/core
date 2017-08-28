@@ -1,6 +1,6 @@
 {
   "name": "@validations/core",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A validation library for JavaScript.",
   "contributors": [
     "Godfrey Chan <godfrey@tilde.io>"
