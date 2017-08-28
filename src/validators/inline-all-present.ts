@@ -2,7 +2,7 @@ import {SingleFieldValidator, SingleFieldError } from "./single-field";
 import {Opaque} from "../utils";
 import {NoArgs} from "../validator";
 
-export class InlineAllPresent extends SingleFieldValidator<NoArgs> {
+export class InlineAllPresentValidator extends SingleFieldValidator<NoArgs> {
   validate(value: Opaque, error: SingleFieldError): void {
     if (!Array.isArray(value)) return;
 

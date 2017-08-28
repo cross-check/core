@@ -15,3 +15,5 @@ export * from './validators/markdown-links';
 export * from './validators/number-or-percentage';
 export * from './validators/canonical-url';
 export * from './validators/inline-all-present';
+export * from './validators/categories-minimum';
+export * from './validators/syndication-contributors-author';

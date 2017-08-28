@@ -18,7 +18,9 @@ import {
   expect,
   MarkdownLinksValidator,
   CanonicalUrlValidator,
-  InlineAllPresent
+  InlineAllPresentValidator,
+  CategoriesMinimumValidator,
+  SyndicationContributorsAuthorValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
@@ -41,7 +43,9 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('string', StringValidator);
     this.env.register('markdown-links', MarkdownLinksValidator);
     this.env.register('canonical-url', CanonicalUrlValidator);
-    this.env.register('inline-all-present', InlineAllPresent);
+    this.env.register('inline-all-present', InlineAllPresentValidator);
+    this.env.register('categories-minimum', CategoriesMinimumValidator);
+    this.env.register('syndication-contributors-author', SyndicationContributorsAuthorValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
