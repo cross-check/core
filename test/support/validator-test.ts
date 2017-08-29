@@ -15,11 +15,18 @@ import {
   PresenceValidator,
   RangeValidator,
   StringValidator,
-  expect
+  expect,
+  MarkdownLinksValidator,
+  CanonicalUrlValidator,
+  InlineAllPresentValidator,
+  CategoriesMinimumValidator,
+  SyndicationContributorsAuthorValidator,
+  SyndicationPhotosToutValidator
 } from '@validations/core';
 import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
 import { TestCase } from './test-case';
+import {} from "../../src/validators/inline-all-present";
 
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
@@ -35,6 +42,12 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('presence', PresenceValidator);
     this.env.register('range', RangeValidator);
     this.env.register('string', StringValidator);
+    this.env.register('markdown-links', MarkdownLinksValidator);
+    this.env.register('canonical-url', CanonicalUrlValidator);
+    this.env.register('inline-all-present', InlineAllPresentValidator);
+    this.env.register('categories-minimum', CategoriesMinimumValidator);
+    this.env.register('syndication-contributors-author', SyndicationContributorsAuthorValidator);
+    this.env.register('syndication-photos-tout', SyndicationPhotosToutValidator);
   }
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
