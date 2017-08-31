@@ -1,11 +1,10 @@
-import { ValidationDescriptors, ValidationDescriptor } from '@validations/dsl';
+import { ValidationDescriptor, ValidationDescriptors } from '@validations/dsl';
 import { Task } from 'no-show';
-import { Validator, ValidationError } from './validator';
-import { Opaque, Dict } from './utils';
 import { Environment } from './env';
+import { Dict, Opaque } from './utils';
+import { ValidationError, Validator } from './validator';
 
 export function validate(env: Environment, object: Opaque, descriptors: ValidationDescriptors): Task<ValidationError[]> {
-  if (object === 'wycats@example.com') debugger;
   return validateFlattened(env, object, flattenDict(descriptors));
 }
 
@@ -19,7 +18,7 @@ export function validateFlattened(env: Environment, object: Opaque, descriptors:
     }
 
     return errors;
-  })
+  });
 }
 
 export interface ValidatorClass {
@@ -27,7 +26,6 @@ export interface ValidatorClass {
 }
 
 function buildValidator(env: Environment, object: Opaque, descriptor: ValidationDescriptor): Validator {
-  if (!descriptor.validator) debugger;
   let name = descriptor.validator.name;
   let constructor = env.getValidator(name);
 

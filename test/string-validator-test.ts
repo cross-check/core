@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("string validators")
+@module('string validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "string validator"(assert: QUnitAssert) {
+  async 'string validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       name: validates('string')
     });

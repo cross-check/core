@@ -1,6 +1,6 @@
 import { Runnable, Task } from 'no-show';
-import { Option, assert, Opaque } from '../utils';
-import { Message, Key, ValidationError, Validator } from '../validator';
+import { Opaque, Option, assert } from '../utils';
+import { Key, Message, ValidationError, Validator } from '../validator';
 
 export class SingleFieldError {
   private error: Option<Message> = null;
@@ -25,10 +25,6 @@ export class SingleFieldError {
 export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> extends Validator<Args> {
   abstract validate(value: Opaque, error: SingleFieldError): Runnable<void>;
 
-  protected getSubProperty(key: string): Opaque {
-    return this.env.get(this.value, key);
-  }
-
   run(): Task<ValidationError[]> {
     let { field } = this;
 
@@ -40,5 +36,9 @@ export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> e
 
       return error.build();
     });
+  }
+
+  protected getSubProperty(key: string): Opaque {
+    return this.env.get(this.value, key);
   }
 }

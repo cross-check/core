@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("date validators")
+@module('date validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "date validator"(assert: QUnitAssert) {
+  async 'date validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       releaseDate: validates('date')
     });

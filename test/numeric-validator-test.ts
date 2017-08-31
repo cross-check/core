@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("numeric validators")
+@module('numeric validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "numeric validator"(assert: QUnitAssert) {
+  async 'numeric validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       age: validates('numeric')
     });

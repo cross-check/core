@@ -1,9 +1,9 @@
+import { ValidationBuilderDSL, ValidationDescriptor, ValidationDescriptors, multi, validates } from '@validations/dsl';
 import { Task } from 'no-show';
-import { ValidationDescriptor, ValidationDescriptors, ValidationBuilderDSL, validates, multi } from '@validations/dsl';
-import { Validator, ValidationError, NoArgs } from '../validator';
-import { SingleFieldValidator, SingleFieldError } from './single-field';
+import { Opaque, dict, flatten } from '../utils';
 import { validate } from '../validate';
-import { Opaque, flatten, dict } from '../utils';
+import { NoArgs, ValidationError, Validator } from '../validator';
+import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class ArrayValidator extends SingleFieldValidator<NoArgs> {
   protected normalized: ValidationDescriptor[];

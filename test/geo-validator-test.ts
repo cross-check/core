@@ -1,11 +1,11 @@
-import dsl from '@validations/dsl';
 import { geo } from '@validations/core';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import dsl from '@validations/dsl';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("Geographical Validators")
+@module('Geographical Validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "geo validator"(assert: QUnitAssert) {
+  async 'geo validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       geo: geo()
     });
@@ -16,6 +16,5 @@ export class ValidatorTest extends ValidationTest {
     assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, descriptors), [{ path: ['geo', 'long'], message: 'numeric' }], 'validate({ geo: { lat: 0, long: {} } })');
     assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'range' }], 'validate({ geo: { lat: 0, long: 300 } })');
   }
-
 
 }

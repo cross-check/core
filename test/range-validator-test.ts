@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("range validators")
+@module('range validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "range validator"(assert: QUnitAssert) {
+  async 'range validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       age: validates('range', {min: 0, max: 130})
     });

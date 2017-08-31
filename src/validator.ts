@@ -1,8 +1,8 @@
 import { ValidationDescriptor } from '@validations/dsl';
 import { Runnable } from 'no-show';
 
-import { Opaque } from "./utils";
 import { Environment } from './env';
+import { Opaque } from './utils';
 
 export type Key = string;
 export type Path = Key[];
@@ -27,8 +27,10 @@ export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArr
     this.initialize();
   }
 
+  abstract run(): Runnable<ValidationError[]>;
+
   // intentionally takes no parameters to aid subclassing
-  protected initialize(): void {}
+  protected initialize(): void { /* noop */ }
 
   protected get field(): string {
     return this.descriptor.field;
@@ -45,10 +47,8 @@ export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArr
   protected get(property: string): Opaque {
     let { descriptor: { field, keys } } = this;
 
-    if (property === field || (keys && keys.includes(property))) {
+    if (property === field || (keys && keys.indexOf(property) !== -1)) {
       return this.env.get(this.object, property);
     }
   }
-
-  abstract run(): Runnable<ValidationError[]>;
 }

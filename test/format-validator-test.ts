@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("format validators")
+@module('format validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "regex format validator"(assert: QUnitAssert) {
+  async 'regex format validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       age: validates('format', /^\d+$/) // one or more only digits
     });
@@ -18,7 +18,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "regex format validator showing that it ignores non-strings"(assert: QUnitAssert) {
+  async 'regex format validator showing that it ignores non-strings'(assert: QUnitAssert) {
     let descriptors = dsl({
       name: validates('format', /^\D+$/) // one or more no digits
     });

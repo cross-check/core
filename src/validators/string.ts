@@ -1,6 +1,6 @@
-import {SingleFieldValidator, SingleFieldError } from "./single-field";
-import {NoArgs} from "../validator";
-import {Opaque} from "../utils";
+import { Opaque } from '../utils';
+import { NoArgs } from '../validator';
+import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class StringValidator extends SingleFieldValidator<NoArgs> {
   validate(value: Opaque, error: SingleFieldError): void {

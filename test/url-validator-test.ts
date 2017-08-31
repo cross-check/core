@@ -1,11 +1,11 @@
-import dsl from '@validations/dsl';
 import { url } from '@validations/core';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import dsl from '@validations/dsl';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("URL validators")
+@module('URL validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "url validator"(assert: QUnitAssert) {
+  async 'url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url()
@@ -28,7 +28,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "relative url validator"(assert: QUnitAssert) {
+  async 'relative url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url('relative')
@@ -50,7 +50,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "absolute url validator"(assert: QUnitAssert) {
+  async 'absolute url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url('absolute')
@@ -69,7 +69,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "secure url validator"(assert: QUnitAssert) {
+  async 'secure url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url('https')
@@ -88,7 +88,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "non-secure url validator"(assert: QUnitAssert) {
+  async 'non-secure url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url('http')
@@ -107,7 +107,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "protocol-relative url validator"(assert: QUnitAssert) {
+  async 'protocol-relative url validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       slug: [
         url('protocol-relative')
@@ -143,6 +143,5 @@ export class ValidatorTest extends ValidationTest {
   //   assert.deepEqual(await this.validate({ slug: 'relative-url' }, descriptors), [], 'validate({ slug: \'relative-url\' })');
   //   assert.deepEqual(await this.validate({ slug: 'relative-url/test' }, descriptors), [], 'validate({ slug: \'relative-url/test\' })');
   // }
-
 
 }

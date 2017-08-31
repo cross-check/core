@@ -1,11 +1,11 @@
+import { length, notnull, obj, range } from '@validations/core';
 import dsl, { validates } from '@validations/dsl';
-import { obj, notnull, length, range } from '@validations/core';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("Object Validators")
+@module('Object Validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "an obj validator"(assert: QUnitAssert) {
+  async 'an obj validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       geo: [
         validates('presence'),
@@ -33,7 +33,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "an obj range validator"(assert: QUnitAssert) {
+  async 'an obj range validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       geo: [
         notnull(obj({
@@ -51,7 +51,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "an obj length validator"(assert: QUnitAssert) {
+  async 'an obj length validator'(assert: QUnitAssert) {
 
     let descriptors = dsl({
       emails: [

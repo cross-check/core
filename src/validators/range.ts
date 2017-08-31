@@ -1,5 +1,5 @@
-import {SingleFieldValidator, SingleFieldError } from "./single-field";
-import {Opaque} from "../utils";
+import { Opaque } from '../utils';
+import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
   validate(value: Opaque, error: SingleFieldError): void {

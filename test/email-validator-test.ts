@@ -1,11 +1,11 @@
-import dsl from '@validations/dsl';
 import { email } from '@validations/core';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import dsl from '@validations/dsl';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("email validators")
+@module('email validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "email validator"(assert: QUnitAssert) {
+  async 'email validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       primaryEmail: [
         email()

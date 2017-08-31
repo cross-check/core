@@ -1,5 +1,5 @@
-import {SingleFieldValidator, SingleFieldError } from "./single-field";
-import {Opaque} from "../utils";
+import { Opaque } from '../utils';
+import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class FormatValidator extends SingleFieldValidator<[RegExp]> {
   validate(value: Opaque, error: SingleFieldError): void {

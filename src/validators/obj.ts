@@ -1,10 +1,10 @@
-import { Task } from 'no-show';
-import normalizeDSL, { ValidationDescriptor, FieldsDSL, ValidationDescriptors, ValidationBuilderDSL, validates } from '@validations/dsl';
+import normalizeDSL, { FieldsDSL, ValidationBuilderDSL, ValidationDescriptor, ValidationDescriptors, validates } from '@validations/dsl';
 import { Nested } from '@validations/dsl/src/utils';
-import { Validator, ValidationError, NoArgs } from '../validator';
-import { SingleFieldValidator, SingleFieldError } from './single-field';
-import { validateFlattened } from '../validate';
+import { Task } from 'no-show';
 import { Opaque } from '../utils';
+import { validateFlattened } from '../validate';
+import { NoArgs, ValidationError, Validator } from '../validator';
+import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class ObjectValidator extends SingleFieldValidator<NoArgs> {
   protected normalized: ValidationDescriptor[];
@@ -47,7 +47,7 @@ export function obj(dsl: FieldsDSL): Nested<ValidationBuilderDSL> {
   return [
     validates('object'),
     validates('fields', normalizeDSL(dsl))
-  ]
+  ];
 }
 
 export function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
@@ -67,5 +67,5 @@ export function range(options: { min?: number, max?: number }): Nested<Validatio
   return notnull([
     validates('numeric'),
     validates('range', options)
-  ])
+  ]);
 }

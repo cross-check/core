@@ -1,12 +1,12 @@
-import dsl, { validates } from '@validations/dsl';
 import { length } from '@validations/core';
+import dsl, { validates } from '@validations/dsl';
 
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("Single Field Validators")
+@module('Single Field Validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "a presence validator"(assert: QUnitAssert) {
+  async 'a presence validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       name: validates('presence')
     });
@@ -23,7 +23,7 @@ export class ValidatorTest extends ValidationTest {
   }
 
   @test
-  async "a length validator"(assert: QUnitAssert) {
+  async 'a length validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       emails: [
         validates('presence'),
@@ -34,6 +34,6 @@ export class ValidatorTest extends ValidationTest {
     assert.deepEqual(await this.validate(null, descriptors), [{ path: ['emails'], message: 'presence' }]);
     assert.deepEqual(await this.validate({ emails: null }, descriptors), [{ path: ['emails'], message: 'presence' }]);
     assert.deepEqual(await this.validate({ emails: [] }, descriptors), [{ path: ['emails', 'length'], message: 'range' }]);
-    assert.deepEqual(await this.validate({ emails: ["wycats@example.com"] }, descriptors), []);
+    assert.deepEqual(await this.validate({ emails: ['wycats@example.com'] }, descriptors), []);
   }
 }

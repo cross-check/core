@@ -1,10 +1,10 @@
 import dsl, { validates } from '@validations/dsl';
-import { ValidationTest, QUnitAssert, module, test } from './support';
+import { QUnitAssert, ValidationTest, module, test } from './support';
 
-@module("presence validators")
+@module('presence validators')
 export class ValidatorTest extends ValidationTest {
   @test
-  async "presence validator"(assert: QUnitAssert) {
+  async 'presence validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       name: validates('presence')
     });

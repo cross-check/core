@@ -1,6 +1,6 @@
+import { obj } from '@validations/core';
 import { ValidationBuilderDSL, validates } from '@validations/dsl';
 import { Nested } from '@validations/dsl/src/utils';
-import { obj } from "@validations/core";
 
 export function geo(): Nested<ValidationBuilderDSL> {
   return [
