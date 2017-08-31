@@ -1,28 +1,32 @@
 import {
-  Environment as AbstractEnvironment,
-  Opaque,
-  ValidatorClass,
-  ValidationError,
-  dict,
-  validate as validateWithEnv,
   ArrayValidator,
   DateValidator,
+  Environment as AbstractEnvironment,
   FieldsValidator,
   FormatValidator,
   MembersValidator,
   NumericValidator,
   ObjectValidator,
+  Opaque,
   PresenceValidator,
   RangeValidator,
   StringValidator,
-  expect
+  ValidationError,
+  ValidatorClass,
+  dict,
+  expect,
+  validate as validateWithEnv
 } from '@validations/core';
-import { Task } from 'no-show';
 import { ValidationDescriptors } from '@validations/dsl';
+import { Task } from 'no-show';
 import { TestCase } from './test-case';
 
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
+
+  before(): void {
+    this.define();
+  }
 
   protected define(): void {
     this.env.register('array', ArrayValidator);
@@ -39,10 +43,6 @@ export abstract class ValidationTest extends TestCase {
 
   protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
     return validateWithEnv(this.env, object, descs);
-  }
-
-  before() {
-    this.define();
   }
 }
 
@@ -65,6 +65,4 @@ export class Environment extends AbstractEnvironment {
   }
 }
 
-export interface ValidatorDecorator {
-  (name: string): (constructor: ValidatorClass) => void;
-}
+export type ValidatorDecorator = (name: string) => (constructor: ValidatorClass) => void;
