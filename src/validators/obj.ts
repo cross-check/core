@@ -1,4 +1,4 @@
-import normalizeDSL, { FieldsDSL, ValidationBuilderDSL, ValidationDescriptor, ValidationDescriptors, validates } from '@validations/dsl';
+import normalizeDSL, { FieldsDSL, ValidationBuilderDSL, ValidationDescriptor, ValidationDescriptors, multi, validates } from '@validations/dsl';
 import { Nested } from '@validations/dsl/src/utils';
 import { Task } from 'no-show';
 import { Opaque } from '../utils';
@@ -44,10 +44,7 @@ export class FieldsValidator extends Validator<[ValidationDescriptors]> {
 }
 
 export function obj(dsl: FieldsDSL): Nested<ValidationBuilderDSL> {
-  return [
-    validates('object'),
-    validates('fields', normalizeDSL(dsl))
-  ];
+  return multi().add(validates('object')).add(validates('fields', normalizeDSL(dsl)));
 }
 
 export function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {

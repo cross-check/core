@@ -1,10 +1,7 @@
-import { validates } from '@validations/dsl';
-import { ComposedValidator, compose } from '../compose';
+import { MultiValidationDSL, multi, validates } from '@validations/dsl';
 
 const emailFormat = /^([^\s]+)@([^\s]+){2,}\.([^\s]+){2,}$/;
 
-export const email: ComposedValidator =
-  compose(() => [
-    validates('string'),
-    validates('format', emailFormat)
-  ]);
+export function email(): MultiValidationDSL {
+  return multi().add(validates('string')).add(validates('format', emailFormat));
+}
