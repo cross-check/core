@@ -1,5 +1,5 @@
-import { array } from '@validations/core';
 import dsl from '@validations/dsl';
+import { array } from '@validations/runtime';
 
 import { QUnitAssert, ValidationTest, module, test } from './support';
 import { email, present, str } from './support/helpers';

@@ -1,5 +1,5 @@
-import { url } from '@validations/core';
 import dsl from '@validations/dsl';
+import { url } from '@validations/runtime';
 import { QUnitAssert, ValidationTest, module, test } from './support';
 
 @module('URL validators')

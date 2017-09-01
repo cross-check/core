@@ -1,5 +1,5 @@
-import { length } from '@validations/core';
 import dsl, { validates } from '@validations/dsl';
+import { length } from '@validations/runtime';
 
 import { QUnitAssert, ValidationTest, module, test } from './support';
 

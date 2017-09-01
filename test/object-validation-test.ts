@@ -1,5 +1,5 @@
-import { length, notnull, obj, range } from '@validations/core';
 import dsl, { validates } from '@validations/dsl';
+import { length, notnull, obj, range } from '@validations/runtime';
 import { QUnitAssert, ValidationTest, module, test } from './support';
 
 @module('Object Validators')

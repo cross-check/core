@@ -1,4 +1,4 @@
-import { Dict, Opaque } from '@validations/core';
+import { Dict, Opaque } from '@validations/runtime';
 import { QUnitAssert } from './interfaces';
 
 // A bunch of this file was extracted from the Glimmer testing harness.

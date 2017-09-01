@@ -1,5 +1,5 @@
-import { year } from '@validations/core';
 import dsl from '@validations/dsl';
+import { year } from '@validations/runtime';
 import { QUnitAssert, ValidationTest, module, test } from './support';
 
 @module('year validators')

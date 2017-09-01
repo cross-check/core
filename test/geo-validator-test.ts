@@ -1,5 +1,5 @@
-import { geo } from '@validations/core';
 import dsl from '@validations/dsl';
+import { geo } from '@validations/runtime';
 import { QUnitAssert, ValidationTest, module, test } from './support';
 
 @module('Geographical Validators')

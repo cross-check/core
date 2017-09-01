@@ -1,3 +1,4 @@
+import { ValidationDescriptors } from '@validations/dsl';
 import {
   ArrayValidator,
   DateValidator,
@@ -16,8 +17,7 @@ import {
   dict,
   expect,
   validate as validateWithEnv
-} from '@validations/core';
-import { ValidationDescriptors } from '@validations/dsl';
+} from '@validations/runtime';
 import { Task } from 'no-show';
 import { TestCase } from './test-case';
 

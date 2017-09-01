@@ -1,5 +1,5 @@
-import { email } from '@validations/core';
 import dsl from '@validations/dsl';
+import { email } from '@validations/runtime';
 import { QUnitAssert, ValidationTest, module, test } from './support';
 
 @module('email validators')
