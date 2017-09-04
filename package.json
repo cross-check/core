@@ -28,7 +28,7 @@
   "devDependencies": {
     "@types/qunit": "^2.0.31",
     "ember-cli": "^2.14.2",
-    "libkit": "^0.5.8",
+    "libkit": "^0.5.9",
     "qunitjs": "^2.4.0",
     "shelljs": "^0.7.8",
     "tslint": "^5.7.0",
@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@validations/dsl": "^0.6.0",
-    "no-show": "^0.6.0"
+    "no-show": "^0.6.0",
+    "ts-std": "^0.5.3"
   }
 }
