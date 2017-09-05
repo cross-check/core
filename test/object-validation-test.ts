@@ -1,6 +1,6 @@
 import dsl, { validates } from '@validations/dsl';
-import { length, notnull, obj, range } from '@validations/runtime';
-import { QUnitAssert, ValidationTest, module, test } from './support';
+import { length, obj, range } from '@validations/runtime';
+import { QUnitAssert, ValidationTest, module, test, validate } from './support';
 
 @module('Object Validators')
 export class ValidatorTest extends ValidationTest {
@@ -36,10 +36,10 @@ export class ValidatorTest extends ValidationTest {
   async 'an obj range validator'(assert: QUnitAssert) {
     let descriptors = dsl({
       geo: [
-        notnull(obj({
+        obj({
           lat: range({ min: -90, max: 90 }),
           long: range({ min: -180, max: 180 })
-        }))
+        }).and(validate.presence)
       ]
     });
 

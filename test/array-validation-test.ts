@@ -2,14 +2,14 @@ import dsl from '@validations/dsl';
 import { array } from '@validations/runtime';
 
 import { QUnitAssert, ValidationTest, module, test } from './support';
-import { email, present, str } from './support/helpers';
+import { email, presence, str } from './support/helpers';
 
 @module('Array Validators')
 export class ValidatorTest extends ValidationTest {
   @test
   async 'an array validator'(assert: QUnitAssert) {
     let descriptors = dsl({
-      emails: present(array(present(email).add(str)))
+      emails: array(presence.and(email).and(str)).and(presence)
     });
 
     assert.deepEqual(await this.validate(null, descriptors), [{ path: ['emails'], message: 'presence' }], 'validate(null)');

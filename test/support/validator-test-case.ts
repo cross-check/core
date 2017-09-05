@@ -1,4 +1,4 @@
-import { ValidationDescriptors } from '@validations/dsl';
+import { FieldValidationDescriptors } from '@validations/core';
 import {
   ArrayValidator,
   DateValidator,
@@ -8,17 +8,15 @@ import {
   MembersValidator,
   NumericValidator,
   ObjectValidator,
-  Opaque,
   PresenceValidator,
   RangeValidator,
   StringValidator,
   ValidationError,
   ValidatorClass,
-  dict,
-  expect,
   validate as validateWithEnv
 } from '@validations/runtime';
 import { Task } from 'no-show';
+import { dict, expect, unknown } from 'ts-std';
 import { TestCase } from './test-case';
 
 export abstract class ValidationTest extends TestCase {
@@ -41,7 +39,7 @@ export abstract class ValidationTest extends TestCase {
     this.env.register('string', StringValidator);
   }
 
-  protected validate(object: Opaque, descs: ValidationDescriptors): Task<ValidationError[]> {
+  protected validate(object: unknown, descs: FieldValidationDescriptors): Task<ValidationError[]> {
     return validateWithEnv(this.env, object, descs);
   }
 }

@@ -35,8 +35,9 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
-    "@validations/dsl": "^0.6.0",
+    "@validations/dsl": "file:../validations-dsl",
+    "@validations/core": "file:../validations-core",
     "no-show": "^0.6.0",
-    "ts-std": "^0.5.3"
+    "ts-std": "^0.5.5"
   }
 }

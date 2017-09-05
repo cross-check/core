@@ -1,8 +1,8 @@
-import { Opaque } from '../utils';
+import { unknown } from 'ts-std';
 import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
-  validate(value: Opaque, error: SingleFieldError): void {
+  validate(value: unknown, error: SingleFieldError): void {
     // non-numeric values should be handled by the numeric validator
     if (typeof value !== 'number') return;
 

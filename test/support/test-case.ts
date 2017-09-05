@@ -1,4 +1,4 @@
-import { Dict, Opaque } from '@validations/runtime';
+import { Dict, unknown } from 'ts-std';
 import { QUnitAssert } from './interfaces';
 
 // A bunch of this file was extracted from the Glimmer testing harness.
@@ -16,7 +16,7 @@ function isTestFunction(value: any): value is TestFunction {
   return typeof value === 'function' && value.isTest;
 }
 
-export function test(meta: Dict<Opaque>): MethodDecorator;
+export function test(meta: Dict<unknown>): MethodDecorator;
 export function test(
   _target: object,
   _name: string,
@@ -24,9 +24,9 @@ export function test(
 ): PropertyDescriptor | void;
 export function test(...args: any[]) {
   if (args.length === 1) {
-    let meta: Dict<Opaque> = args[0];
+    let meta: Dict<unknown> = args[0];
     return (_target: object, _name: string, propertyDescriptor: PropertyDescriptor) => {
-      let testFunction = propertyDescriptor.value as TestFunction & Dict<Opaque> ;
+      let testFunction = propertyDescriptor.value as TestFunction & Dict<unknown> ;
       Object.keys(meta).forEach(key => (testFunction[key] = meta[key]));
       setTestingDescriptor(propertyDescriptor);
     };
@@ -37,7 +37,7 @@ export function test(...args: any[]) {
   return descriptor;
 }
 
-export interface Constructor<T = Opaque, Prototype = T> {
+export interface Constructor<T = unknown, Prototype = T> {
   prototype: Prototype;
   new(...args: any[]): T;
 }
@@ -48,7 +48,7 @@ export function module(
   return (klass: typeof TestCase & Constructor) => {
     QUnit.module(name);
 
-    let proto = klass.prototype as any as Dict<Opaque>;
+    let proto = klass.prototype as any as Dict<unknown>;
     for (let prop in proto) {
       const testFunction = proto[prop];
 

@@ -1,8 +1,8 @@
-import { ValidationDescriptor } from '@validations/dsl';
+import { ValidationDescriptor } from '@validations/core';
 import { Runnable } from 'no-show';
+import { unknown } from 'ts-std';
 
 import { Environment } from './env';
-import { Opaque } from './utils';
 
 export type Key = string;
 export type Path = Key[];
@@ -15,12 +15,13 @@ export interface ValidationError {
 
 export type NoArgs = ReadonlyArray<never>;
 
-export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArray<Opaque>> {
-  protected value: Opaque;
+export abstract class Validator<Args extends ReadonlyArray<unknown> = ReadonlyArray<unknown>> {
+  protected value: unknown;
 
   constructor(
     protected env: Environment,
-    private object: Opaque,
+    protected field: string,
+    private object: unknown,
     protected descriptor: ValidationDescriptor
   ) {
     this.value = this.get(this.field);
@@ -32,10 +33,6 @@ export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArr
   // intentionally takes no parameters to aid subclassing
   protected initialize(): void { /* noop */ }
 
-  protected get field(): string {
-    return this.descriptor.field;
-  }
-
   protected get arg(): Args[0] {
     return this.args[0];
   }
@@ -44,8 +41,8 @@ export abstract class Validator<Args extends ReadonlyArray<Opaque> = ReadonlyArr
     return this.descriptor.validator.args as Args;
   }
 
-  protected get(property: string): Opaque {
-    let { descriptor: { field, keys } } = this;
+  protected get(property: string): unknown {
+    let { field, descriptor: { keys } } = this;
 
     if (property === field || (keys && keys.indexOf(property) !== -1)) {
       return this.env.get(this.object, property);

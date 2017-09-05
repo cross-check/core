@@ -1,9 +1,9 @@
-import { MultiValidationDSL, ValidationBuilderDSL, multi, validates } from '@validations/dsl';
+import { ValidationBuilder, validates } from '@validations/dsl';
 
-export const presence: MultiValidationDSL = multi().add(validates('presence'));
-export const email: MultiValidationDSL = multi().add(validates('format', /^(.+)@(.+){2,}\.(.+){2,}$/));
-export const str: MultiValidationDSL = multi().add(validates('string'));
+export const presence = validates('presence');
+export const email = validates('format', /^(.+)@(.+){2,}\.(.+){2,}$/);
+export const str = validates('string');
 
-export function present(validator: ValidationBuilderDSL): MultiValidationDSL {
-  return presence.add(validator);
+export function present(validator: ValidationBuilder): ValidationBuilder {
+  return presence.and(validator);
 }

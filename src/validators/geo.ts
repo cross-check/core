@@ -1,10 +1,8 @@
-import { ValidationBuilderDSL, validates } from '@validations/dsl';
-import { Nested } from '@validations/dsl/src/utils';
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { obj } from '@validations/runtime';
 
-export function geo(): Nested<ValidationBuilderDSL> {
-  return [
-    validates('presence'),
+export function geo(): ValidationBuilder {
+  return validates('presence').and(
     obj({
       lat: [
         validates('presence'),
@@ -18,5 +16,5 @@ export function geo(): Nested<ValidationBuilderDSL> {
         validates('range', { min: -180, max: 180 })
       ]
     })
-  ];
+  );
 }

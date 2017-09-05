@@ -1,8 +1,8 @@
-import { Opaque } from './utils';
+import { unknown } from 'ts-std';
 import { ValidatorClass } from './validate';
 
 export abstract class Environment {
-  get<T>(object: Opaque, key: PropertyKey): T | undefined {
+  get<T>(object: unknown, key: PropertyKey): T | undefined {
     if (typeof object === 'object' && object !== null) {
       return (object as any)[key] as T;
     }

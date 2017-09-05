@@ -1,5 +1,4 @@
-import { ValidationBuilderDSL, validates } from '@validations/dsl';
-import { Nested } from '@validations/dsl/src/utils';
+import { ValidationBuilder, validates } from '@validations/dsl';
 
 const absoluteUrlFormat = /^(https?:)?\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 const relativeUrlFormat = /^(?!(https?:)?\/\/)[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
@@ -7,22 +6,25 @@ const httpUrlFormat = /^http:\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 const httpsUrlFormat = /^https:\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 const protocolRelativeUrlFormat = /^\/\/[\w\d-_\/=?&.%:#\[\]@!\$'\(\)\*\+,]+$/;
 
-export function url(option?: string): Nested<ValidationBuilderDSL> {
-  let validators: ValidationBuilderDSL[] = [
-    validates('string')
-  ];
+export const enum UrlType {
+  Absolute = 'absolute',
+  Relative = 'relative',
+  Http = 'http',
+  Https = 'https',
+  ProtocolRelative = 'protocol-relative'
+}
 
-  if (option === 'absolute' || option === undefined) {
-    validators.push(validates('format', absoluteUrlFormat));
-  } else if (option === 'relative') {
-    validators.push(validates('format', relativeUrlFormat));
-  } else if (option === 'http') {
-    validators.push(validates('format', httpUrlFormat));
-  } else if (option === 'https') {
-    validators.push(validates('format', httpsUrlFormat));
-  } else if (option === 'protocol-relative') {
-    validators.push(validates('format', protocolRelativeUrlFormat));
+export function url(option: UrlType = UrlType.Absolute): ValidationBuilder {
+  let format: RegExp;
+
+  switch (option) {
+    case UrlType.Absolute: format = absoluteUrlFormat; break;
+    case UrlType.Relative: format = relativeUrlFormat; break;
+    case UrlType.Http:     format = httpUrlFormat; break;
+    case UrlType.Https:    format = httpsUrlFormat; break;
+    case UrlType.ProtocolRelative: format = protocolRelativeUrlFormat; break;
+    default: throw new Error('unreachable');
   }
 
-  return validators;
+  return validates('string').and(validates('format', format));
 }

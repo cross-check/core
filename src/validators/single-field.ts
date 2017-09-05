@@ -1,5 +1,5 @@
 import { Runnable, Task } from 'no-show';
-import { Opaque, Option, assert } from '../utils';
+import { Option, assert, unknown } from 'ts-std';
 import { Key, Message, ValidationError, Validator } from '../validator';
 
 export class SingleFieldError {
@@ -22,8 +22,8 @@ export class SingleFieldError {
   }
 }
 
-export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> extends Validator<Args> {
-  abstract validate(value: Opaque, error: SingleFieldError): Runnable<void>;
+export abstract class SingleFieldValidator<Args extends ReadonlyArray<unknown>> extends Validator<Args> {
+  abstract validate(value: unknown, error: SingleFieldError): Runnable<void>;
 
   run(): Task<ValidationError[]> {
     let { field } = this;
@@ -38,7 +38,7 @@ export abstract class SingleFieldValidator<Args extends ReadonlyArray<Opaque>> e
     });
   }
 
-  protected getSubProperty(key: string): Opaque {
+  protected getSubProperty(key: string): unknown {
     return this.env.get(this.value, key);
   }
 }

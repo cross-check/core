@@ -1,15 +1,13 @@
-import normalizeDSL, { FieldsDSL, ValidationBuilderDSL, ValidationDescriptor, ValidationDescriptors, multi, validates } from '@validations/dsl';
-import { Nested } from '@validations/dsl/src/utils';
+import { FieldValidationDescriptors } from '@validations/core';
+import normalize, { FieldValidationBuilders, ValidationBuilder, validates } from '@validations/dsl';
 import { Task } from 'no-show';
-import { Opaque } from '../utils';
+import { unknown } from 'ts-std';
 import { validateFlattened } from '../validate';
 import { NoArgs, ValidationError, Validator } from '../validator';
 import { SingleFieldError, SingleFieldValidator } from './single-field';
 
 export class ObjectValidator extends SingleFieldValidator<NoArgs> {
-  protected normalized: ValidationDescriptor[];
-
-  validate(value: Opaque, error: SingleFieldError): void {
+  validate(value: unknown, error: SingleFieldError): void {
     // ignore null and undefined, which should be handled by the presence validator
     if (typeof value === 'object' || value === undefined) return;
 
@@ -17,9 +15,7 @@ export class ObjectValidator extends SingleFieldValidator<NoArgs> {
   }
 }
 
-export class FieldsValidator extends Validator<[ValidationDescriptors]> {
-  protected normalized: ValidationDescriptors;
-
+export class FieldsValidator extends Validator<[FieldValidationDescriptors]> {
   run(): Task<ValidationError[]> {
     let { value, field } = this;
 
@@ -43,26 +39,16 @@ export class FieldsValidator extends Validator<[ValidationDescriptors]> {
   }
 }
 
-export function obj(dsl: FieldsDSL): Nested<ValidationBuilderDSL> {
-  return multi().add(validates('object')).add(validates('fields', normalizeDSL(dsl)));
+export function obj(dsl: FieldValidationBuilders): ValidationBuilder     {
+  return validates('object').and(validates('fields', normalize(dsl)));
 }
 
-export function notnull(input: Nested<ValidationBuilderDSL>): Nested<ValidationBuilderDSL> {
-  return [
-    validates('presence'),
-    input
-  ];
-}
-
-export function length(options: { min: number, max?: number }): Nested<ValidationBuilderDSL> {
+export function length(options: { min: number, max?: number }): ValidationBuilder {
   return obj({
-    length: notnull([validates('numeric'), validates('range', options)])
+    length: validates('presence').and(validates('numeric')).and(validates('range', options))
   });
 }
 
-export function range(options: { min?: number, max?: number }): Nested<ValidationBuilderDSL> {
-  return notnull([
-    validates('numeric'),
-    validates('range', options)
-  ]);
+export function range(options: { min?: number, max?: number }): ValidationBuilder {
+  return validates('presence').and(validates('numeric')).and(validates('range', options));
 }
