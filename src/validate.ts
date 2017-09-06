@@ -1,32 +1,23 @@
-import { FieldValidationDescriptors, ValidationDescriptor, ValidationDescriptors } from '@validations/core';
+import { ValidationDescriptor, ValidationDescriptors, ValidationError, Validator } from '@validations/core';
 import { Task } from 'no-show';
-import { entries, unknown } from 'ts-std';
+import { unknown } from 'ts-std';
 import { Environment } from './env';
-import { ValidationError, Validator } from './validator';
 
-export function validate(env: Environment, object: unknown, descriptors: FieldValidationDescriptors): Task<ValidationError[]> {
+export function validate(env: Environment, value: unknown, descriptors: ValidationDescriptors): Task<ValidationError[]> {
   return new Task(async run => {
     let errors: ValidationError[] = [];
 
-    for (let [key, descs] of entries<ValidationDescriptors>(descriptors)) {
-      for (let descriptor of descs) {
-        let validator = buildValidator(env, key, object, descriptor);
-        errors.push(...await run(validator.run()));
-      }
+    for (let descriptor of descriptors) {
+      let { factory, options } = descriptor;
+      let validator = factory(env, options);
+
+      errors.push(...await run(validator(value)));
     }
 
     return errors;
   });
-
 }
 
 export interface ValidatorClass {
   new(env: Environment, key: string, object: unknown, descriptor: ValidationDescriptor): Validator;
-}
-
-function buildValidator(env: Environment, key: string, object: unknown, descriptor: ValidationDescriptor): Validator {
-  let name = descriptor.validator.name;
-  let constructor = env.getValidator(name);
-
-  return new constructor(env, key, object, descriptor);
 }

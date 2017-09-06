@@ -1,15 +1,27 @@
+import { ValidationError, Validator } from '@validations/core';
+import { Task } from 'no-show';
 import { unknown } from 'ts-std';
-import { NoArgs } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
 
-export class DateValidator extends SingleFieldValidator<NoArgs> {
-  validate(value: unknown, error: SingleFieldError): void {
-    // ignore everything except string and number.
-    if (typeof value !== 'string' && typeof value !== 'number') return;
+export type DateOptions = undefined;
 
-    let date = new Date(value);
-    if (!(date.getFullYear() >= 1900 && date.getFullYear() <= 3000)) {
-      error.set('date');
-    }
-  }
+export interface DateErrorMessage {
+  key: 'date';
+  args: null;
+}
+
+export type DateError = ValidationError<DateErrorMessage>;
+
+export function date(): Validator<DateErrorMessage> {
+  return (value: unknown): Task<DateError[]> => {
+    return new Task(async () => {
+      if (typeof value !== 'string' && typeof value !== 'number') return [];
+
+      let dateValue = new Date(value);
+      if (!(dateValue.getFullYear() >= 1900 && dateValue.getFullYear() <= 3000)) {
+        return [{ path: [], message: { key: 'date' as 'date', args: null }}];
+      } else {
+        return [];
+      }
+    });
+  };
 }

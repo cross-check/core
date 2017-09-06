@@ -2,7 +2,6 @@ import { FieldValidationDescriptors } from '@validations/core';
 import normalize, { FieldValidationBuilders, ValidationBuilder, validates } from '@validations/dsl';
 import { Task } from 'no-show';
 import { unknown } from 'ts-std';
-import { validateFlattened } from '../validate';
 import { NoArgs, ValidationError, Validator } from '../validator';
 import { SingleFieldError, SingleFieldValidator } from './single-field';
 
