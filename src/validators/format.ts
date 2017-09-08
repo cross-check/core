@@ -1,12 +1,22 @@
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { unknown } from 'ts-std';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { ValueValidator, factoryFor } from './value';
 
-export class FormatValidator extends SingleFieldValidator<[RegExp]> {
-  validate(value: unknown, error: SingleFieldError): void {
+export interface FormatErrorMessage {
+  key: 'format';
+  args: null;
+}
+
+export class FormatValidator extends ValueValidator<RegExp, FormatErrorMessage> {
+  validate(value: unknown): FormatErrorMessage | void {
     if (typeof value === 'string') {
-      if (!this.arg.test(value)) {
-        error.set('format');
+      if (!this.options.test(value)) {
+        return { key: 'format', args: null };
       }
     }
   }
+}
+
+export function format(regexp: RegExp): ValidationBuilder {
+  return validates(factoryFor(FormatValidator), regexp);
 }

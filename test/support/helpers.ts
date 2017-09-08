@@ -1,9 +1,6 @@
-import { ValidationBuilder, validates } from '@validations/dsl';
+import { ValidationBuilder } from '@validations/dsl';
+import { format } from '@validations/runtime';
 
-export const presence = validates('presence');
-export const email = validates('format', /^(.+)@(.+){2,}\.(.+){2,}$/);
-export const str = validates('string');
-
-export function present(validator: ValidationBuilder): ValidationBuilder {
-  return presence.and(validator);
+export function email(): ValidationBuilder {
+  return format(/^(.+)@(.+){2,}\.(.+){2,}$/);
 }

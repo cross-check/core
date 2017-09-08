@@ -11,7 +11,7 @@
       "preLaunchTask": "Build Tests",
       "program": "${workspaceRoot}/node_modules/qunitjs/bin/qunit",
       "args": [
-        "dist/commonjs/test/**/*-test.js"
+        "dist/commonjs/test/index.js"
       ],
       "outFiles": ["${workspaceRoot}/dist/commonjs/**/*.js"],
       "internalConsoleOptions": "openOnSessionStart"

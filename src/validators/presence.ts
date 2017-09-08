@@ -1,11 +1,20 @@
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { unknown } from 'ts-std';
-import { NoArgs } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { ValueValidator, factoryFor } from './value';
 
-export class PresenceValidator extends SingleFieldValidator<NoArgs> {
-  validate(value: unknown, error: SingleFieldError): void {
+export interface PresenceErrorMessage {
+  key: 'presence';
+  args: null;
+}
+
+export class PresenceValidator extends ValueValidator<null, PresenceErrorMessage> {
+  validate(value: unknown): PresenceErrorMessage | void {
     if (value === null || value === undefined) {
-      error.set('presence');
+      return { key: 'presence' as 'presence', args: null };
     }
   }
+}
+
+export function presence(): ValidationBuilder {
+  return validates(factoryFor(PresenceValidator), null);
 }

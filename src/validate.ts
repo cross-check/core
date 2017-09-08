@@ -1,7 +1,6 @@
-import { ValidationDescriptor, ValidationDescriptors, ValidationError, Validator } from '@validations/core';
+import { Environment, ValidationDescriptor, ValidationDescriptors, ValidationError, Validator } from '@validations/core';
 import { Task } from 'no-show';
 import { unknown } from 'ts-std';
-import { Environment } from './env';
 
 export function validate(env: Environment, value: unknown, descriptors: ValidationDescriptors): Task<ValidationError[]> {
   return new Task(async run => {

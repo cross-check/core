@@ -1,14 +1,22 @@
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { unknown } from 'ts-std';
-import { NoArgs } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { ValueValidator, factoryFor } from './value';
 
-export class StringValidator extends SingleFieldValidator<NoArgs> {
-  validate(value: unknown, error: SingleFieldError): void {
-    // null and undefined should be handled by the presence validator
+export interface StringErrorMessage {
+  key: 'string';
+  args: null;
+}
+
+export class StringValidator extends ValueValidator<null, StringErrorMessage> {
+  validate(value: unknown): StringErrorMessage | void {
     if (value === null || value === undefined) return;
 
     if (typeof value !== 'string') {
-      error.set('string');
+      return { key: 'string' as 'string', args: null };
     }
   }
+}
+
+export function string(): ValidationBuilder {
+  return validates(factoryFor(StringValidator), null);
 }

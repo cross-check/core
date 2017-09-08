@@ -1,37 +1,48 @@
-import { FieldValidationDescriptors } from '@validations/core';
-import normalize, { FieldValidationBuilders, ValidationBuilder, validates } from '@validations/dsl';
+import { Environment, ValidationDescriptors, ValidationError } from '@validations/core';
+import normalize, { ValidationBuilder, validates } from '@validations/dsl';
 import { Task } from 'no-show';
 import { unknown } from 'ts-std';
 import { validate } from '../validate';
-import { NoArgs, ValidationError, Validator } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { Validator, ValueValidator, factoryFor } from './value';
 
-export class ArrayValidator extends SingleFieldValidator<NoArgs> {
-  protected normalized: FieldValidationDescriptors;
+export interface ArrayErrorMessage {
+  key: 'array';
+  args: null;
+}
 
-  validate(value: unknown, error: SingleFieldError): void {
-    // ignore null and undefined, which should be handled by the presence validator
-    if (Array.isArray(value) || value === null || value === undefined) return;
+export class ArrayValidator extends ValueValidator<null, ArrayErrorMessage> {
+  validate(v: unknown): Task<ArrayErrorMessage | void> {
+    return new Task(async () => {
+      // ignore null and undefined, which should be handled by the presence validator
+      if (Array.isArray(v) || v === null || v === undefined) return;
 
-    error.set('array');
+      return { key: 'array' as 'array', args: null };
+    });
   }
 }
 
-export class MembersValidator extends Validator<[FieldValidationDescriptors]> {
-  run(): Task<ValidationError[]> {
-    let { value, arg: validators, env, field } = this;
+export function isArray(): ValidationBuilder {
+  return validates(factoryFor(ArrayValidator), null);
+}
 
+function mapError({ path, message }: ValidationError, index: number): ValidationError {
+  return { path: [...path, String(index)], message };
+}
+
+export class MembersValidator implements Validator {
+  constructor(protected env: Environment, protected descriptors: ValidationDescriptors) {}
+
+  run(v: unknown): Task<ValidationError[]> {
     return new Task(async run => {
-      if (!Array.isArray(value)) {
+      if (!Array.isArray(v)) {
         return [];
       }
 
       let errors: ValidationError[] = [];
 
-      let suberrors = await run(validate(env, value, validators));
-
-      for (let error of suberrors) {
-        errors.push({ message: error.message, path: [field, ...error.path] });
+      for (let i = 0; i < v.length; i++) {
+        let suberrors = await run(validate(this.env, v[i], this.descriptors));
+        errors.push(...suberrors.map(error => mapError(error, i)));
       }
 
       return errors;
@@ -39,6 +50,10 @@ export class MembersValidator extends Validator<[FieldValidationDescriptors]> {
   }
 }
 
-export function array(dsl: FieldValidationBuilders): ValidationBuilder {
-  return validates('array').and(validates('members', normalize(dsl)));
+export function arrayItems(builder: ValidationBuilder): ValidationBuilder {
+  return validates(factoryFor(MembersValidator), normalize(builder));
+}
+
+export function array(builder: ValidationBuilder): ValidationBuilder {
+  return isArray().and(arrayItems(builder));
 }

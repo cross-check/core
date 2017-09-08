@@ -8,11 +8,6 @@ export type Key = string;
 export type Path = Key[];
 export type Message = string;
 
-export interface ValidationError {
-  path: Path;
-  message: Message;
-}
-
 export type NoArgs = ReadonlyArray<never>;
 
 export abstract class Validator<Args extends ReadonlyArray<unknown> = ReadonlyArray<unknown>> {

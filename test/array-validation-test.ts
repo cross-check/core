@@ -1,20 +1,23 @@
-import dsl from '@validations/dsl';
-import { array } from '@validations/runtime';
+import validates from '@validations/dsl';
+import { array, presence, string } from '@validations/runtime';
 
 import { QUnitAssert, ValidationTest, module, test } from './support';
-import { email, presence, str } from './support/helpers';
+import { email } from './support/helpers';
 
 @module('Array Validators')
 export class ValidatorTest extends ValidationTest {
   @test
   async 'an array validator'(assert: QUnitAssert) {
-    let descriptors = dsl({
-      emails: array(presence.and(email).and(str)).and(presence)
-    });
+    let descriptors = validates(
+      presence().and(array(presence().and(email()).and(string())))
+    );
 
-    assert.deepEqual(await this.validate(null, descriptors), [{ path: ['emails'], message: 'presence' }], 'validate(null)');
-    assert.deepEqual(await this.validate({ emails: null }, descriptors), [{ path: ['emails'], message: 'presence' }], 'validate({ email: null })');
-    assert.deepEqual(await this.validate({ emails: [null] }, descriptors), [{ path: ['emails', '0'], message: 'presence' }], 'validate({ emails: [null] })');
-    assert.deepEqual(await this.validate({ emails: [{}, null, 'wycats@example.com', 'notemail'] }, descriptors), [{ path: ['emails', '0'], message: 'string' }, { path: ['emails', '1'], message: 'presence' }, { path: ['emails', '3'], message: 'format' }], 'validate({ emails: [null] })');
+    assert.deepEqual(await this.validate(null, descriptors), [{ path: [], message: { key: 'presence', args: null } }], 'validate(null)');
+    assert.deepEqual(await this.validate([null], descriptors), [{ path: ['0'], message: { key: 'presence', args: null } }], 'validate([null])');
+    assert.deepEqual(await this.validate([{}, null, 'wycats@example.com', 'notemail'], descriptors), [
+      { path: ['0'], message: { key: 'string', args: null } },
+      { path: ['1'], message: { key: 'presence', args: null } },
+      { path: ['3'], message: { key: 'format', args: null } }
+    ], 'validate({ emails: [null] })');
   }
 }

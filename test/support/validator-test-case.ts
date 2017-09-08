@@ -1,17 +1,6 @@
-import { FieldValidationDescriptors } from '@validations/core';
+import { ValidationDescriptors, ValidationError } from '@validations/core';
 import {
-  ArrayValidator,
-  DateValidator,
   Environment as AbstractEnvironment,
-  FieldsValidator,
-  FormatValidator,
-  MembersValidator,
-  NumericValidator,
-  ObjectValidator,
-  PresenceValidator,
-  RangeValidator,
-  StringValidator,
-  ValidationError,
   ValidatorClass,
   validate as validateWithEnv
 } from '@validations/runtime';
@@ -22,24 +11,7 @@ import { TestCase } from './test-case';
 export abstract class ValidationTest extends TestCase {
   protected env = new Environment();
 
-  before(): void {
-    this.define();
-  }
-
-  protected define(): void {
-    this.env.register('array', ArrayValidator);
-    this.env.register('date', DateValidator);
-    this.env.register('fields', FieldsValidator);
-    this.env.register('format', FormatValidator);
-    this.env.register('members', MembersValidator);
-    this.env.register('numeric', NumericValidator);
-    this.env.register('object', ObjectValidator);
-    this.env.register('presence', PresenceValidator);
-    this.env.register('range', RangeValidator);
-    this.env.register('string', StringValidator);
-  }
-
-  protected validate(object: unknown, descs: FieldValidationDescriptors): Task<ValidationError[]> {
+  protected validate(object: unknown, descs: ValidationDescriptors): Task<ValidationError[]> {
     return validateWithEnv(this.env, object, descs);
   }
 }
