@@ -1,36 +1,46 @@
-import { FieldValidationDescriptors } from '@validations/core';
-import normalize, { FieldValidationBuilders, ValidationBuilder, validates } from '@validations/dsl';
+import { Environment, ValidationDescriptors, ValidationError } from '@validations/core';
+import normalize, { ValidationBuilder, validates } from '@validations/dsl';
 import { Task } from 'no-show';
-import { unknown } from 'ts-std';
-import { NoArgs, ValidationError, Validator } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { Dict, dict, entries, unknown } from 'ts-std';
+import { validate } from '../validate';
+import { Validator, ValueValidator, factoryFor } from './value';
 
-export class ObjectValidator extends SingleFieldValidator<NoArgs> {
-  validate(value: unknown, error: SingleFieldError): void {
-    // ignore null and undefined, which should be handled by the presence validator
-    if (typeof value === 'object' || value === undefined) return;
+export interface ObjectErrorMessage {
+  key: 'object';
+  args: null;
+}
 
-    error.set('object');
+export class ObjectValidator extends ValueValidator<null, ObjectErrorMessage> {
+  validate(v: unknown): Task<ObjectErrorMessage | void> {
+    return new Task(async () => {
+      // ignore null and undefined, which should be handled by the presence validator
+      if (typeof v === 'object' || v === null || v === undefined) return;
+
+      return { key: 'object' as 'object', args: null };
+    });
   }
 }
 
-export class FieldsValidator extends Validator<[FieldValidationDescriptors]> {
-  run(): Task<ValidationError[]> {
-    let { value, field } = this;
+export function isObject(): ValidationBuilder {
+  return validates(factoryFor(ObjectValidator), null);
+}
 
+function mapError({ path, message }: ValidationError, key: string): ValidationError {
+  return { path: [key, ...path], message };
+}
+
+export class FieldsValidator implements Validator {
+  constructor(protected env: Environment, protected descriptors: Dict<ValidationDescriptors>) {}
+
+  run(v: unknown): Task<ValidationError[]> {
     return new Task(async run => {
+      if (typeof v !== 'object' || v === null || v === undefined) return [];
+
       let errors: ValidationError[] = [];
 
-      if (typeof value === 'object' && value !== null) {
-        let { arg, env } = this;
-
-        for (let key of Object.keys(arg)) {
-          let suberrors = await run(validateFlattened(env, value, arg[key]!));
-
-          for (let error of suberrors) {
-            errors.push({ message: error.message, path: [field, ...error.path] });
-          }
-        }
+      for (let [key, descriptors] of entries(this.descriptors)) {
+        let suberrors = await run(validate(this.env, (v as Dict<unknown>)[key], descriptors!));
+        errors.push(...suberrors.map(error => mapError(error, key)));
       }
 
       return errors;
@@ -38,16 +48,24 @@ export class FieldsValidator extends Validator<[FieldValidationDescriptors]> {
   }
 }
 
-export function obj(dsl: FieldValidationBuilders): ValidationBuilder     {
-  return validates('object').and(validates('fields', normalize(dsl)));
+export function objectFields(fields: Dict<ValidationBuilder[] | ValidationBuilder>): ValidationBuilder {
+  return validates(factoryFor(FieldsValidator), normalizeFields(fields));
 }
 
-export function length(options: { min: number, max?: number }): ValidationBuilder {
-  return obj({
-    length: validates('presence').and(validates('numeric')).and(validates('range', options))
-  });
+function normalizeFields(fields: Dict<ValidationBuilder[] | ValidationBuilder>): Dict<ValidationDescriptors> {
+  let out = dict<ValidationDescriptors>();
+
+  for (let [key, value] of entries(fields)) {
+    let descriptors = Array.isArray(value) ? normalize(...value) : normalize(value!);
+
+    if (descriptors.length > 0) {
+      out[key] = descriptors;
+    }
+  }
+
+  return out;
 }
 
-export function range(options: { min?: number, max?: number }): ValidationBuilder {
-  return validates('presence').and(validates('numeric')).and(validates('range', options));
+export function obj(builder: Dict<ValidationBuilder[] | ValidationBuilder>): ValidationBuilder {
+  return isObject().and(objectFields(builder));
 }

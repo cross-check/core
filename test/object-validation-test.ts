@@ -1,74 +1,86 @@
-import dsl, { validates } from '@validations/dsl';
-import { length, obj, range } from '@validations/runtime';
-import { QUnitAssert, ValidationTest, module, test, validate } from './support';
+import validate from '@validations/dsl';
+import { number, obj, presence, range } from '@validations/runtime';
+import { unknown } from 'ts-std';
+import { QUnitAssert, ValidationTest, module, test } from './support';
+
+function error(key: string, path?: string, args: unknown = null) {
+  return { path: path ? path.split('.') : [], message: { key, args }};
+}
 
 @module('Object Validators')
 export class ValidatorTest extends ValidationTest {
   @test
   async 'an obj validator'(assert: QUnitAssert) {
-    let descriptors = dsl({
-      geo: [
-        validates('presence'),
-        obj({
-          lat: [
-            validates('presence'),
-            validates('numeric'),
-            validates('range', { min: -90, max: 90 })
-          ],
+    let validation = validate(
+      presence(),
+      obj({
+        geo: [
+          presence(),
+          obj({
+            lat: [
+              presence(),
+              number(),
+              range({ min: -90, max: 90 })
+            ],
 
-          long: [
-            validates('presence'),
-            validates('numeric'),
-            validates('range', { min: -180, max: 180 })
-          ]
-        })
-      ]
-    });
+            long: [
+              presence(),
+              number(),
+              range({ min: -180, max: 180 })
+            ]
+          })
+        ]
+      })
+    );
 
-    assert.deepEqual(await this.validate(null, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate(null)');
-    assert.deepEqual(await this.validate({ geo: null }, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate({ geo: null })');
-    assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, descriptors), [{ path: ['geo', 'lat'], message: 'presence' }, { path: ['geo', 'long'], message: 'presence' }], 'validate({ geo: { lat: null, long: null } })');
-    assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, descriptors), [{ path: ['geo', 'long'], message: 'numeric' }], 'validate({ geo: { lat: 0, long: {} } })');
-    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'range' }], 'validate({ geo: { lat: 0, long: 300 } })');
+    assert.deepEqual(await this.validate(null, validation), [error('presence')], 'validate(null)');
+    assert.deepEqual(await this.validate({ geo: null }, validation), [error('presence', 'geo')], 'validate({ geo: null })');
+    assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, validation), [error('presence', 'geo.lat'), error('presence', 'geo.long')], 'validate({ geo: { lat: null, long: null } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, validation), [error('number', 'geo.long')], 'validate({ geo: { lat: 0, long: {} } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, validation), [error('range', 'geo.long', { min: -180, max: 180 })], 'validate({ geo: { lat: 0, long: 300 } })');
   }
 
   @test
   async 'an obj range validator'(assert: QUnitAssert) {
-    let descriptors = dsl({
-      geo: [
-        obj({
-          lat: range({ min: -90, max: 90 }),
-          long: range({ min: -180, max: 180 })
-        }).and(validate.presence)
-      ]
-    });
+    let validation = validate(
+      presence(),
+      obj({
+        geo: [
+          presence(),
+          obj({
+            lat: [ presence(), number(), range({ min: -90, max: 90 }) ],
+            long: [ presence(), number(), range({ min: -180, max: 180 }) ]
+          })
+        ]
+      })
+    );
 
-    assert.deepEqual(await this.validate(null, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate(null)');
-    assert.deepEqual(await this.validate({ geo: null }, descriptors), [{ path: ['geo'], message: 'presence' }], 'validate({ geo: null })');
-    assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, descriptors), [{ path: ['geo', 'lat'], message: 'presence' }, { path: ['geo', 'long'], message: 'presence' }], 'validate({ geo: { lat: null, long: null } })');
-    assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, descriptors), [{ path: ['geo', 'long'], message: 'numeric' }], 'validate({ geo: { lat: 0, long: {} } })');
-    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, descriptors), [{ path: ['geo', 'long'], message: 'range' }], 'validate({ geo: { lat: 0, long: 300 } })');
+    assert.deepEqual(await this.validate(null, validation), [error('presence')], 'validate(null)');
+    assert.deepEqual(await this.validate({ geo: null }, validation), [error('presence', 'geo')], 'validate({ geo: null })');
+    assert.deepEqual(await this.validate({ geo: { lat: null, long: null } }, validation), [error('presence', 'geo.lat'), error('presence', 'geo.long')], 'validate({ geo: { lat: null, long: null } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: {} } }, validation), [error('number', 'geo.long')], 'validate({ geo: { lat: 0, long: {} } })');
+    assert.deepEqual(await this.validate({ geo: { lat: 0, long: 300 } }, validation), [error('range', 'geo.long', { min: -180, max: 180 })], 'validate({ geo: { lat: 0, long: 300 } })');
   }
 
   @test
   async 'an obj length validator'(assert: QUnitAssert) {
+    function length(options: { min?: number, max?: number }) {
+      return obj({
+        length: presence().and(number().and(range(options)))
+      });
+    }
 
-    let descriptors = dsl({
-      emails: [
-        length({ min: 1, max: 3 })
-      ]
-    });
+    let validation = validate(length({ min: 1, max: 3 }));
 
-    assert.deepEqual(await this.validate(null, descriptors), [], 'validate(null)');
-    assert.deepEqual(await this.validate({ emails: null }, descriptors), [], 'validate({ emails: null })');
-    assert.deepEqual(await this.validate({ emails: {} }, descriptors), [{ path: ['emails', 'length'], message: 'presence' }], 'validate({ emails: {} })');
-    assert.deepEqual(await this.validate({ emails: { length: 2 } }, descriptors), [], 'validate({ emails: { length: 2 } })');
-    assert.deepEqual(await this.validate({ emails: [] }, descriptors), [{ path: ['emails', 'length'], message: 'range' }], 'validate({ emails: [] } })');
-    assert.deepEqual(await this.validate({ emails: ['jimmy@gmail.com'] }, descriptors), [], 'validate({ emails: [\'jimmy@gmail.com\'] })');
+    assert.deepEqual(await this.validate(null, validation), [], 'validate(null)');
+    assert.deepEqual(await this.validate({}, validation), [error('presence', 'length')], 'validate({})');
+    assert.deepEqual(await this.validate({ length: 2 }, validation), [], 'validate({ length: 2 })');
+    assert.deepEqual(await this.validate([], validation), [error('range', 'length', { min: 1, max: 3 })], 'validate([])');
+    assert.deepEqual(await this.validate(['jimmy@gmail.com'], validation), [], 'validate([\'jimmy@gmail.com\'])');
 
-    let failureMessage = 'validate({ emails: [\'jimmy@gmail.com\', \'sally@gmail.com\', \'buddy@gmail.com\', \'harry@gmail.com\'] } })';
-    let testDSL = { emails: ['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'] };
-    let expected = [{ path: ['emails', 'length'], message: 'range' }];
-    assert.deepEqual(await this.validate(testDSL, descriptors), expected, failureMessage);
+    let failureMessage = `validate(['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'])`;
+    let testDSL = ['jimmy@gmail.com', 'sally@gmail.com', 'buddy@gmail.com', 'harry@gmail.com'];
+    let expected = [error('range', 'length', { min: 1, max: 3 })];
+    assert.deepEqual(await this.validate(testDSL, validation), expected, failureMessage);
   }
 }

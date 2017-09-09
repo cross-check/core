@@ -1,14 +1,22 @@
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { unknown } from 'ts-std';
-import { NoArgs } from '../validator';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { ValueValidator, factoryFor } from './value';
 
-export class NumericValidator extends SingleFieldValidator<NoArgs> {
-  validate(value: unknown, error: SingleFieldError): void {
-    // null and undefined should be handled by the presence validator
+export interface NumberErrorMessage {
+  key: 'number';
+  args: null;
+}
+
+export class NumberValidator extends ValueValidator<null, NumberErrorMessage> {
+  validate(value: unknown): NumberErrorMessage | void {
     if (value === null || value === undefined) return;
 
     if (typeof value !== 'number') {
-      error.set('numeric');
+      return { key: 'number' as 'number', args: null };
     }
   }
+}
+
+export function number(): ValidationBuilder {
+  return validates(factoryFor(NumberValidator), null);
 }

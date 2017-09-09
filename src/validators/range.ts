@@ -1,21 +1,34 @@
+import { ValidationBuilder, validates } from '@validations/dsl';
 import { unknown } from 'ts-std';
-import { SingleFieldError, SingleFieldValidator } from './single-field';
+import { ValueValidator, factoryFor } from './value';
 
-export class RangeValidator extends SingleFieldValidator<[{ min?: number, max?: number }]> {
-  validate(value: unknown, error: SingleFieldError): void {
+export interface RangeErrorMessage {
+  key: 'range';
+  args: RangeOptions;
+}
+
+export interface RangeOptions {
+  min?: number;
+  max?: number;
+}
+
+export class RangeValidator extends ValueValidator<RangeOptions, RangeErrorMessage> {
+  validate(value: unknown): RangeErrorMessage | void {
     // non-numeric values should be handled by the numeric validator
     if (typeof value !== 'number') return;
 
-    let options = this.arg;
+    let options = this.options;
 
     if (options.min !== undefined && value < options.min) {
-      error.set('range');
-      return;
+      return { key: 'range' as 'range', args: options };
     }
 
     if (options.max !== undefined && value > options.max) {
-      error.set('range');
-      return;
+      return { key: 'range' as 'range', args: options };
     }
   }
+}
+
+export function range(options: RangeOptions): ValidationBuilder {
+  return validates(factoryFor(RangeValidator), options);
 }
