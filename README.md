@@ -1,11 +1,11 @@
-# @validations/core
+# @cross-check/core
 
 The core primitive data structures and functions for a validation library.
 
-This library is used to implement `@validations/dsl`. In general, you probably want to use that library, even for primitive use-cases.
+This library is used to implement `@cross-check/dsl`. In general, you probably want to use that library, even for primitive use-cases.
 
-The data structures and core functions are extracted into a separate library to create a small, well-defined composition boundary. Any validators written against the interfaces in `@validations/core` will compose reliably with validators created using the higher level abstractions (including the object
-oriented abstractions) provided using `@validations/dsl`.
+The data structures and core functions are extracted into a separate library to create a small, well-defined composition boundary. Any validators written against the interfaces in `@cross-check/core` will compose reliably with validators created using the higher level abstractions (including the object
+oriented abstractions) provided using `@cross-check/dsl`.
 
 ## Composition Goals
 
@@ -47,7 +47,7 @@ Second, it should be possible to write a validator that looks up properties on a
 
 In both cases, the philosophy of this library is to expose hooks on an "Environment" (see below) that framework integrators can use to abstract these distinctions. Validators receive this environment as a parameter, and if validator definitions work through the Environment (e.g. looking up properties by using `environment.get` rather than direct indexing), they will be reusable in more environments and with more kinds of data structures.
 
-Because it can be difficult to remember to work through the environment all the time, the `@validations/dsl` library provides a number of abstractions that do the work for you. For example, the `object()` validator provided by `@validations/dsl` automatically looks up sub-properties by using `environment.get`.
+Because it can be difficult to remember to work through the environment all the time, the `@cross-check/dsl` library provides a number of abstractions that do the work for you. For example, the `object()` validator provided by `@cross-check/dsl` automatically looks up sub-properties by using `environment.get`.
 
 ### Values, Not Models
 
@@ -124,7 +124,7 @@ const SimpleEnvironment = {
 
 As described above, this allows users of frameworks like Ember and Knockout, as well as libraries like Immutable.js, to describe how to look up properties.
 
-Validators implemented using `@validations/dsl` automatically use this interface to look up sub-properties, which means that normally-written validators will work just fine in many environments.
+Validators implemented using `@cross-check/dsl` automatically use this interface to look up sub-properties, which means that normally-written validators will work just fine in many environments.
 
 ### Service Functions
 
